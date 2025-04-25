@@ -13,11 +13,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import datetime
 from typing import List, Optional
+import environ
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    CORS_ALLOW_ALL_ORIGINS=(bool, False),
+    CORS_ALLOWED_ORIGINS=(list, []),
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -154,8 +162,17 @@ SIMPLE_JWT = {
 }
 AUTH_USER_MODEL = "app.CustomUser"
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+CORS_ALLOW_ALL_ORIGINS = env("CORS_ALLOW_ALL_ORIGINS")
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-authorization",
 ]

@@ -65,7 +65,7 @@ class ChangePasswordView(APIView):
 
     def post(self, request):
         user = request.user
-        serializer = ChangePasswordDetailSerializer(request.data)
+        serializer = ChangePasswordDetailSerializer(data=request.data)
         if serializer.is_valid():
             if not user.check_password(serializer.validated_data.get("old_password")):
                 return Response(
@@ -83,7 +83,7 @@ class ChangePasswordView(APIView):
 
 class StudentLoginView(APIView):
     def post(self, request):
-        serializer = StudentLoginDetailSerializer(request.data)
+        serializer = StudentLoginDetailSerializer(data=request.data)
         if serializer.is_valid():
             student = Student.objects.filter(
                 registration_no=serializer.validated_data.get("registration_no")
@@ -170,7 +170,7 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
     def update(self, request, *args, **kwargs):
         try:
             group = Group.objects.get(student_2__user=request.user)
-            status_serializer = GroupStatusSerializer(request.data)
+            status_serializer = GroupStatusSerializer(data=request.data)
             if status_serializer.is_valid():
                 status_serializer.save()
                 Group.objects.filter(
