@@ -150,10 +150,10 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
     def get_queryset(self):
         requested = self.request.GET.get("requested")
         if requested == "to":  # student sended from that student to other student
-            return self.get_queryset().filter(student_1__user=self.request.user)
+            return super().get_queryset().filter(student_1__user=self.request.user)
         elif requested == "from":  # student received from other student to that student
-            return self.get_queryset().filter(student_2__user=self.request.user)
-        return self.get_queryset()
+            return super().get_queryset().filter(student_2__user=self.request.user)
+        return super().get_queryset()
 
     def post(self, request, *args, **kwargs):
         try:

@@ -60,9 +60,22 @@ class GroupStatusSerializer(serializers.ModelSerializer):
 
 
 class GroupRequestSerializer(serializers.ModelSerializer):
-    student_1 = StudentProfileSerializer(read_only=True)
-    student_2 = StudentProfileSerializer(read_only=True)
-    project_category = ProjectCategoriesSerializer(read_only=True)
+    student_1=serializers.PrimaryKeyRelatedField(
+        queryset=Student.objects.all(), write_only=True
+    )
+    student_2=serializers.PrimaryKeyRelatedField(
+        queryset=Student.objects.all(), write_only=True
+    )
+    project_category=serializers.PrimaryKeyRelatedField(    
+        queryset=ProjectCategories.objects.all(), write_only=True
+    )
+    student_1_details = StudentProfileSerializer(read_only=True, source="student_1")
+    student_2_details = StudentProfileSerializer(read_only=True, source="student_2")
+    project_category_details = ProjectCategoriesSerializer(
+        read_only=True, source="project_category"
+    )
+    # student_2 = StudentProfileSerializer(read_only=True)
+    # project_category = ProjectCategoriesSerializer(read_only=True)
     # show comments of current group
     comment_count = serializers.SerializerMethodField(read_only=True)
 
@@ -83,8 +96,11 @@ class GroupRequestSerializer(serializers.ModelSerializer):
             "status",
             "project_category",
             "comment_count",
+            "student_1_details",
+            "student_2_details",
+            "project_category_details",
         ]
-        read_only = ["id", "comment_count", "status"]
+        read_only = ["comment_count", "status"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
