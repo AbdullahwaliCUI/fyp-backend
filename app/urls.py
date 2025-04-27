@@ -14,9 +14,9 @@ from .views import (
     SupervisorResponseAPIView,
     SupervisorLoginAPIView,
     CommitteeMemberLoginAPIView,
-    Supervisorprofile,
+    SupervisorprofileView,
     GroupComments,
-    CommitteeMemberProfile,
+    CommitteeMemberProfileView,
 )
 
 urlpatterns = [
@@ -25,7 +25,11 @@ urlpatterns = [
     path(
         "supervisor/login/", SupervisorLoginAPIView.as_view(), name="supervisor-login"
     ),
-    path("supervisor/profile/", Supervisorprofile.as_view(), name="supervisor-profile"),
+    path(
+        "supervisor/profile/",
+        SupervisorprofileView.as_view(),
+        name="supervisor-profile",
+    ),
     path(
         "committee_member/login/",
         CommitteeMemberLoginAPIView.as_view(),
@@ -33,7 +37,7 @@ urlpatterns = [
     ),
     path(
         "committee_member/profile/",
-        CommitteeMemberProfile.as_view(),
+        CommitteeMemberProfileView.as_view(),
         name="committee-member-profile",
     ),
     path("change_password/", ChangePasswordView.as_view(), name="change_password"),

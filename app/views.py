@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import (
     ListAPIView,
@@ -43,6 +44,8 @@ from app.serializers.serializers import (
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
     StudentLoginDetailSerializer,
+    SupervisorLoginDetailSerializer,
+    CommitteeMemberLoginDetailSerializer,
 )
 
 
@@ -109,19 +112,27 @@ class StudentProfileView(RetrieveAPIView):
         return self.get_queryset().get(user=self.request.user)
 
 
+class StudentPagination(PageNumberPagination):
+    page_size = 10
+
+
 class StudentsListView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = StudentProfileSerializer
     queryset = Student.objects.all()
-    pagination_class = Paginator
+    pagination_class = StudentPagination
 
     def get_queryset(self):
         student = Student.objects.get(user=self.request.user)
-        queryset = self.get_queryset().filter(
-            batch_no=student.batch_no,
-            departement=student.departement,
-            semester=student.semester,
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                batch_no=student.batch_no,
+                department=student.department,
+                semester=student.semester,
+            )
         )
         return queryset
 
@@ -354,53 +365,53 @@ class SupervisorResponseAPIView(APIView):
 
 class SupervisorLoginAPIView(APIView):
     def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        supervisor = Supervisor.objects.filter(user__username=username).first()
-        if supervisor and supervisor.user.check_password(password):
-            token = get_tokens_for_user(supervisor.user)
-            return Response(token, status=200)
+        serializer = SupervisorLoginDetailSerializer(request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get("email")
+            supervisor = Supervisor.objects.filter(user__email=email).first()
+            if supervisor and supervisor.user.check_password(
+                serializer.validated_data.get("password")
+            ):
+                token = get_tokens_for_user(supervisor.user)
+                return Response(token, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Invalid credentials"}, status=401)
         else:
-            return Response({"message": "Invalid credentials"}, status=401)
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class Supervisorprofile(APIView):
+class SupervisorprofileView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = SupervisorProfileSerializer
+    queryset = Supervisor.objects.all()
 
-    def get(self, request):
-        try:
-            supervisor = Supervisor.objects.get(user=request.user)
-            serializer = SupervisorProfileSerializer(supervisor)
-            return Response(serializer.data)
-        except Supervisor.DoesNotExist:
-            return Response({"message": "Supervisor profile not found"}, status=404)
+    def get_object(self):
+        return self.get_queryset().get(user=self.request.user)
 
 
 class CommitteeMemberLoginAPIView(APIView):
     def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        committeeMember = CommitteeMember.objects.filter(
-            user__username=username
-        ).first()
-        if committeeMember and committeeMember.user.check_password(password):
-            token = get_tokens_for_user(committeeMember.user)
-            return Response(token, status=200)
+        serializer = CommitteeMemberLoginDetailSerializer(request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get("email")
+            committeeMember = CommitteeMember.objects.filter(user__email=email).first()
+            if committeeMember and committeeMember.user.check_password(
+                serializer.validated_data.get("password")
+            ):
+                token = get_tokens_for_user(committeeMember.user)
+                return Response(token, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Invalid credentials"}, status=401)
         else:
-            return Response({"message": "Invalid credentials"}, status=401)
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CommitteeMemberProfile(APIView):
+class CommitteeMemberProfileView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = CommitteeMemberProfileSerializer
+    queryset = CommitteeMember.objects.all()
 
-    def get(self, request):
-        try:
-            committee_member = CommitteeMember.objects.get(user=request.user)
-            serializer = CommitteeMemberProfileSerializer(committee_member)
-            return Response(serializer.data)
-        except CommitteeMember.DoesNotExist:
-            return Response(
-                {"message": "Committee Member profile not found"}, status=404
-            )
+    def get_object(self):
+        return self.get_queryset().get(user=self.request.user)

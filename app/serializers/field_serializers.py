@@ -14,3 +14,13 @@ class StudentLoginDetailSerializer(serializers.Serializer):
 class GroupRequestSerializer(serializers.Serializer):
     student_2_id = serializers.IntegerField(required=True)
     project_category = serializers.IntegerField(required=True)
+
+
+class SupervisorLoginDetailSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100, required=True)
+    password = serializers.CharField(max_length=128, required=True)
+
+
+class CommitteeMemberLoginDetailSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100, required=True)
+    password = serializers.CharField(max_length=128, required=True)
