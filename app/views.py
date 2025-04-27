@@ -1,10 +1,9 @@
-from django.core.paginator import Paginator
+from .paginators import BasePagination
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import (
     ListAPIView,
@@ -112,16 +111,13 @@ class StudentProfileView(RetrieveAPIView):
         return self.get_queryset().get(user=self.request.user)
 
 
-class StudentPagination(PageNumberPagination):
-    page_size = 10
-
 
 class StudentsListView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = StudentProfileSerializer
     queryset = Student.objects.all()
-    pagination_class = StudentPagination
+    pagination_class = BasePagination
 
     def get_queryset(self):
         student = Student.objects.get(user=self.request.user)
@@ -142,7 +138,7 @@ class ProjectCategoriesView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProjectCategoriesSerializer
     queryset = ProjectCategories.objects.all()
-    pagination_class = Paginator
+    pagination_class = BasePagination
 
 
 class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
@@ -163,7 +159,7 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
         try:
             student_1 = Student.objects.get(user=request.user)
             serializer = GroupRequestSerializer(
-                {
+                data={
                     **request.data,
                     "student_1": student_1.id,
                 }
