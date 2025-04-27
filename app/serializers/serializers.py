@@ -103,13 +103,21 @@ class GroupRequestSerializer(serializers.ModelSerializer):
         read_only = ["comment_count", "status"]
 
 
+# class CommentSerializer(serializers.ModelSerializer):
+#     student = StudentProfileSerializer(read_only=True)
+
+#     class Meta:
+#         model = GroupCreationComment
+#         fields = ["id", "comment", "group", "student", "created_at"]
+#         read_only = ["id", "created_at"]
+
 class CommentSerializer(serializers.ModelSerializer):
     student = StudentProfileSerializer(read_only=True)
 
     class Meta:
         model = GroupCreationComment
         fields = ["id", "comment", "group", "student", "created_at"]
-        read_only = ["id", "created_at"]
+        read_only_fields = ["id", "created_at", "group", "student"]  # Add 'group' and 'student'
 
 
 class ProjectSerializer(serializers.ModelSerializer):

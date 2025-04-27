@@ -217,23 +217,25 @@ class GroupComments(APIView):
 
     def post(self, request, group):
         try:
+            # Get the student and group instances
             student = Student.objects.get(user=request.user)
-            serializer = CommentSerializer(
-                data={
-                    **request.data,
-                    "student": student.id,
-                    "group": group,
-                }
-            )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            group_instance = Group.objects.get(id=group)
         except Student.DoesNotExist:
             return Response(
                 {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
             )
+        except Group.DoesNotExist:
+            return Response(
+                {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Initialize serializer with request data
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save with the student and group instances
+            serializer.save(student=student, group=group_instance)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, group):
         try:
@@ -241,8 +243,7 @@ class GroupComments(APIView):
             serializer = CommentSerializer(group_comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except GroupCreationComment.DoesNotExist:
-            return Response({"message": "No comments found"}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({"message": "No comments found"}, status=404)
 # class GroupComments(APIView):
 #     authentication_classes = [JWTAuthentication]
 #     permission_classes = [IsAuthenticated]
