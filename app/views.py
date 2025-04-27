@@ -177,7 +177,18 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
     def update(self, request, *args, **kwargs):
         try:
             group = Group.objects.get(student_2__user=request.user)
-            status_serializer = GroupStatusSerializer(data=request.data)
+            # check request of similar student already exist then not send it again
+            existing_group = Group.objects.filter(
+                student_1=group.student_1,
+                student_2=group.student_2,
+                status="pending",
+            ).exclude(id=group.id).exists()
+            if existing_group:
+                return Response(
+                    {"message": "Group mate request already exists"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            status_serializer = GroupStatusSerializer(instance=group, data=request.data, partial=True)
             if status_serializer.is_valid():
                 status_serializer.save()
                 Group.objects.filter(
@@ -206,15 +217,19 @@ class GroupComments(APIView):
 
     def post(self, request, group):
         try:
+            student = Student.objects.get(user=request.user)
             serializer = CommentSerializer(
-                {
+                data={
                     **request.data,
-                    "student": Student.objects.get(user=request.user).id,
+                    "student": student.id,
                     "group": group,
                 }
             )
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Student.DoesNotExist:
             return Response(
                 {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
@@ -226,7 +241,37 @@ class GroupComments(APIView):
             serializer = CommentSerializer(group_comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except GroupCreationComment.DoesNotExist:
-            return Response({"message": "No comments found"}, status=404)
+            return Response({"message": "No comments found"}, status=status.HTTP_404_NOT_FOUND)
+
+# class GroupComments(APIView):
+#     authentication_classes = [JWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     lookup_url_kwarg = "group"
+#     lookup_field = "group"
+
+#     def post(self, request, group):
+#         try:
+#             serializer = CommentSerializer(
+#                 {
+#                     **request.data,
+#                     "student": Student.objects.get(user=request.user).id,
+#                     "group": group,
+#                 }
+#             )
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         except Student.DoesNotExist:
+#             return Response(
+#                 {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
+#             )
+
+#     def get(self, request, group):
+#         try:
+#             group_comments = GroupCreationComment.objects.filter(group=group)
+#             serializer = CommentSerializer(group_comments, many=True)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except GroupCreationComment.DoesNotExist:
+#             return Response({"message": "No comments found"}, status=404)
 
 
 class ProjectAPIVIEW(ListAPIView):
