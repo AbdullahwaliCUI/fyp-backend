@@ -111,7 +111,6 @@ class StudentProfileView(RetrieveAPIView):
         return self.get_queryset().get(user=self.request.user)
 
 
-
 class StudentsListView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -178,17 +177,23 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
         try:
             group = Group.objects.get(student_2__user=request.user)
             # check request of similar student already exist then not send it again
-            existing_group = Group.objects.filter(
-                student_1=group.student_1,
-                student_2=group.student_2,
-                status="pending",
-            ).exclude(id=group.id).exists()
+            existing_group = (
+                Group.objects.filter(
+                    student_1=group.student_1,
+                    student_2=group.student_2,
+                    status="pending",
+                )
+                .exclude(id=group.id)
+                .exists()
+            )
             if existing_group:
                 return Response(
                     {"message": "Group mate request already exists"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            status_serializer = GroupStatusSerializer(instance=group, data=request.data, partial=True)
+            status_serializer = GroupStatusSerializer(
+                instance=group, data=request.data, partial=True
+            )
             if status_serializer.is_valid():
                 status_serializer.save()
                 Group.objects.filter(
@@ -198,7 +203,7 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                     | Q(student_1=group.student_1)
                     | Q(student_2=group.student_1),
                     status="pending",
-                ).update(status="rejected")
+                ).update(status="canceled")
                 return Response(status_serializer.data, status.HTTP_200_OK)
             else:
                 return Response(status_serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -244,35 +249,6 @@ class GroupComments(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except GroupCreationComment.DoesNotExist:
             return Response({"message": "No comments found"}, status=404)
-# class GroupComments(APIView):
-#     authentication_classes = [JWTAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     lookup_url_kwarg = "group"
-#     lookup_field = "group"
-
-#     def post(self, request, group):
-#         try:
-#             serializer = CommentSerializer(
-#                 {
-#                     **request.data,
-#                     "student": Student.objects.get(user=request.user).id,
-#                     "group": group,
-#                 }
-#             )
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         except Student.DoesNotExist:
-#             return Response(
-#                 {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
-#             )
-
-#     def get(self, request, group):
-#         try:
-#             group_comments = GroupCreationComment.objects.filter(group=group)
-#             serializer = CommentSerializer(group_comments, many=True)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         except GroupCreationComment.DoesNotExist:
-#             return Response({"message": "No comments found"}, status=404)
 
 
 class ProjectAPIVIEW(ListAPIView):

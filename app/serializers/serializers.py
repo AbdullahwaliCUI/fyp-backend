@@ -26,7 +26,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ["user", "registration_no"]
+        fields = ["user", "registration_no", "department", "semester", "batch_no"]
 
 
 class SupervisorProfileSerializer(serializers.ModelSerializer):
@@ -60,13 +60,13 @@ class GroupStatusSerializer(serializers.ModelSerializer):
 
 
 class GroupRequestSerializer(serializers.ModelSerializer):
-    student_1=serializers.PrimaryKeyRelatedField(
+    student_1 = serializers.PrimaryKeyRelatedField(
         queryset=Student.objects.all(), write_only=True
     )
-    student_2=serializers.PrimaryKeyRelatedField(
+    student_2 = serializers.PrimaryKeyRelatedField(
         queryset=Student.objects.all(), write_only=True
     )
-    project_category=serializers.PrimaryKeyRelatedField(    
+    project_category = serializers.PrimaryKeyRelatedField(
         queryset=ProjectCategories.objects.all(), write_only=True
     )
     student_1_details = StudentProfileSerializer(read_only=True, source="student_1")
@@ -80,12 +80,16 @@ class GroupRequestSerializer(serializers.ModelSerializer):
     comment_count = serializers.SerializerMethodField(read_only=True)
 
     def get_comment_count(self, obj):
-        return GroupCreationComment.objects.filter(group=obj).count()
+        return GroupCreationComment.objects.filter(group=obj.id).count()
 
     def validate(self, attrs):
         if attrs.get("student_1") == attrs.get("student_2"):
             return serializers.ValidationError("You cannot send a request to yourself.")
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        obj, _ = Group.objects.get_or_create(**validated_data)
+        return obj
 
     class Meta:
         model = Group
@@ -111,13 +115,19 @@ class GroupRequestSerializer(serializers.ModelSerializer):
 #         fields = ["id", "comment", "group", "student", "created_at"]
 #         read_only = ["id", "created_at"]
 
+
 class CommentSerializer(serializers.ModelSerializer):
     student = StudentProfileSerializer(read_only=True)
 
     class Meta:
         model = GroupCreationComment
         fields = ["id", "comment", "group", "student", "created_at"]
-        read_only_fields = ["id", "created_at", "group", "student"]  # Add 'group' and 'student'
+        read_only_fields = [
+            "id",
+            "created_at",
+            "group",
+            "student",
+        ]  # Add 'group' and 'student'
 
 
 class ProjectSerializer(serializers.ModelSerializer):

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 
 # Student Model
 
@@ -11,6 +12,14 @@ class CustomUser(AbstractUser):
         ("committee_member", "Committee Member"),
     )
     user_type = models.CharField(max_length=50, choices=USER_TYPE_CHOICES)
+    password = models.CharField(
+        _("password"),
+        max_length=128,
+        default=(
+            "pbkdf2_sha256$600000$nI24sQ6SMrCktseq"
+            "8GsQEN$3g3MpxyFn93g3H7ID5xW+y7VriQhhpoCRoprZq4x4Wk="
+        ),
+    )
 
     def __str__(self):
         return self.username
@@ -62,6 +71,7 @@ class Group(models.Model):
         ("pending", "Pending"),
         ("accepted", "Accepted"),
         ("rejected", "Rejected"),
+        ("canceled", "Canceled"),
     )
     student_1 = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="send_request"
