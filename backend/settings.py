@@ -15,6 +15,7 @@ import datetime
 from typing import List, Optional
 import environ
 import os
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,7 @@ env = environ.Env(
     CORS_ALLOWED_ORIGINS=(list, []),
 )
 
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
