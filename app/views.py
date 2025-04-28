@@ -175,22 +175,8 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
 
     def update(self, request, *args, **kwargs):
         try:
-            group = Group.objects.get(student_2__user=request.user)
-            # check request of similar student already exist then not send it again
-            existing_group = (
-                Group.objects.filter(
-                    student_1=group.student_1,
-                    student_2=group.student_2,
-                    status="pending",
-                )
-                .exclude(id=group.id)
-                .exists()
-            )
-            if existing_group:
-                return Response(
-                    {"message": "Group mate request already exists"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            grouo_id= request.GET.get("pk")
+            group = Group.objects.get(id=grouo_id)
             status_serializer = GroupStatusSerializer(
                 instance=group, data=request.data, partial=True
             )
