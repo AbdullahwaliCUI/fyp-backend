@@ -39,6 +39,7 @@ from app.serializers.serializers import (
     SupervisorOfStudentGroupSerializer,
     SupervisorProfileSerializer,
     CommitteeMemberProfileSerializer,
+    GroupCategorySerializer
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -177,22 +178,28 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
         try:
             grouo_id= request.GET.get("pk")
             group = Group.objects.get(id=grouo_id)
-            status_serializer = GroupStatusSerializer(
-                instance=group, data=request.data, partial=True
-            )
-            if status_serializer.is_valid():
-                status_serializer.save()
-                Group.objects.filter(
-                    ~Q(id=group.id),
-                    Q(student_1__user=request.user)
-                    | Q(student_2__user=request.user)
-                    | Q(student_1=group.student_1)
-                    | Q(student_2=group.student_1),
-                    status="pending",
-                ).update(status="canceled")
-                return Response(status_serializer.data, status.HTTP_200_OK)
+            if group.student_1.user== request.user:
+                serializer=GroupCategorySerializer(
+                    instance=group, data=request.data, partial=True
+                )
             else:
-                return Response(status_serializer.errors, status.HTTP_400_BAD_REQUEST)
+                serializer = GroupStatusSerializer(
+                    instance=group, data=request.data, partial=True
+                )
+            if serializer.is_valid():
+                serializer.save()
+                if serializer.data.get("status"):
+                    Group.objects.filter(
+                        ~Q(id=group.id),
+                        Q(student_1__user=request.user)
+                        | Q(student_2__user=request.user)
+                        | Q(student_1=group.student_1)
+                        | Q(student_2=group.student_1),
+                        status="pending",
+                    ).update(status="canceled")
+                return Response(serializer.data, status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         except Group.DoesNotExist:
             return Response(
                 {"message": "Group mate request not found"},

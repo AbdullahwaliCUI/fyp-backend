@@ -59,6 +59,13 @@ class GroupStatusSerializer(serializers.ModelSerializer):
         fields = ["status"]
 
 
+class GroupCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ["project_category"]
+
+
+
 class GroupRequestSerializer(serializers.ModelSerializer):
     student_1 = serializers.PrimaryKeyRelatedField(
         queryset=Student.objects.all(), write_only=True
@@ -74,9 +81,6 @@ class GroupRequestSerializer(serializers.ModelSerializer):
     project_category_details = ProjectCategoriesSerializer(
         read_only=True, source="project_category"
     )
-    # student_2 = StudentProfileSerializer(read_only=True)
-    # project_category = ProjectCategoriesSerializer(read_only=True)
-    # show comments of current group
     comment_count = serializers.SerializerMethodField(read_only=True)
 
     def get_comment_count(self, obj):
@@ -88,7 +92,13 @@ class GroupRequestSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        obj, _ = Group.objects.get_or_create(**validated_data)
+        project_category = validated_data.pop("project_category")
+        try:
+            obj= Group.objects.get(**validated_data)
+        except Group.DoesNotExist:
+            obj = Group(**validated_data)
+        obj.project_category = project_category
+        obj.save()
         return obj
 
     class Meta:
