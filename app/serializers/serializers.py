@@ -34,7 +34,7 @@ class SupervisorProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = ["user", "supervisor_id"]
+        fields = ["id","user", "supervisor_id"]
 
 
 class CommitteeMemberProfileSerializer(serializers.ModelSerializer):
@@ -117,15 +117,6 @@ class GroupRequestSerializer(serializers.ModelSerializer):
         read_only = ["comment_count", "status"]
 
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     student = StudentProfileSerializer(read_only=True)
-
-#     class Meta:
-#         model = GroupCreationComment
-#         fields = ["id", "comment", "group", "student", "created_at"]
-#         read_only = ["id", "created_at"]
-
-
 class CommentSerializer(serializers.ModelSerializer):
     student = StudentProfileSerializer(read_only=True)
 
@@ -172,19 +163,11 @@ class NewIdeaProjectSerializer(serializers.ModelSerializer):
         read_only = ["id", "created_at"]
 
 
-class SupervisorStudentCommentsSerializer(serializers.ModelSerializer):
-    student = StudentProfileSerializer(read_only=True)
-    supervisor = SupervisorProfileSerializer(read_only=True)
-
-    class Meta:
-        model = SupervisorStudentComments
-        fields = ["id", "student", "supervisor", "comment", "comment_by", "created_at"]
-        read_only_fields = ["id", "created_at"]
-
 
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
-    group = GroupRequestSerializer
+    group = GroupRequestSerializer(read_only=True)
     supervisor = SupervisorProfileSerializer(read_only=True)
+    project = ProjectSerializer(read_only=True)
 
     class Meta:
         model = SupervisorOfStudentGroup
@@ -197,3 +180,13 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "created_at",
             "created_by",
         ]
+
+
+class SupervisorStudentCommentsSerializer(serializers.ModelSerializer):
+    student = StudentProfileSerializer(read_only=True)
+    supervisor = SupervisorProfileSerializer(read_only=True)
+
+    class Meta:
+        model = SupervisorStudentComments
+        fields = ["id", "student", "supervisor", "comment", "comment_by", "created_at"]
+        read_only_fields = ["id", "created_at"]

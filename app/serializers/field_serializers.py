@@ -24,3 +24,8 @@ class SupervisorLoginDetailSerializer(serializers.Serializer):
 class CommitteeMemberLoginDetailSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=100, required=True)
     password = serializers.CharField(max_length=128, required=True)
+
+
+class SupervisorofStudentGroupSerializer(serializers.Serializer):
+    supervisor= serializers.IntegerField(required=True)
+    project= serializers.IntegerField(required=True)

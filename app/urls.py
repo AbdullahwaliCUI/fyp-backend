@@ -17,6 +17,7 @@ from .views import (
     SupervisorprofileView,
     GroupComments,
     CommitteeMemberProfileView,
+    ListSuperisorAPIView
 )
 
 urlpatterns = [
@@ -63,6 +64,11 @@ urlpatterns = [
         "student/proposal/list/",
         StudentProposalListAPIView.as_view(),
         name="student-proposal-list",
+    ),
+    path(
+        "supervisor/list/",
+        ListSuperisorAPIView.as_view(),
+        name="supervisor-list",
     ),
     path(
         "supervisor/student/comments/",

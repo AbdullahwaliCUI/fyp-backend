@@ -51,6 +51,9 @@ class Supervisor(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="supervisor_profile"
     )
     supervisor_id = models.CharField(max_length=100, unique=True)
+    category=models.ManyToManyField(
+        ProjectCategories, related_name="supervisor", blank=True
+    )
 
     def __str__(self):
         return self.user.username
@@ -130,26 +133,6 @@ class NewIdeaProject(models.Model):
         return f"{self.title} - {self.student}"
 
 
-class SupervisorStudentComments(models.Model):
-    COMMENT_BY_CHOICES = (
-        ("student", "Student"),
-        ("supervisor", "Supervisor"),
-    )
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name="student_comments"
-    )
-    supervisor = models.ForeignKey(
-        Supervisor, on_delete=models.CASCADE, related_name="supervisor_comments"
-    )
-    comment = models.TextField()
-    commented_by = models.CharField(
-        max_length=20, choices=COMMENT_BY_CHOICES, default="student"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.supervisor} - {self.student} - {self.comment}"
-
 
 class SupervisorOfStudentGroup(models.Model):
     STATUS_CHOICES = (
@@ -157,6 +140,7 @@ class SupervisorOfStudentGroup(models.Model):
         ("accepted_by_student", "Accepted by Student"),
         ("accepted", "Accepted"),
         ("rejected", "Rejected"),
+        ("canceled", "Canceled"),
     )
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, related_name="supervisor_request"
@@ -178,3 +162,24 @@ class SupervisorOfStudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.group} - {self.supervisor} - {self.status}"
+
+
+class SupervisorStudentComments(models.Model):
+    COMMENT_BY_CHOICES = (
+        ("student", "Student"),
+        ("supervisor", "Supervisor"),
+    )
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, related_name="student_comments"
+    )
+    supervisor = models.ForeignKey(
+        Supervisor, on_delete=models.CASCADE, related_name="supervisor_comments"
+    )
+    comment = models.TextField()
+    commented_by = models.CharField(
+        max_length=20, choices=COMMENT_BY_CHOICES, default="student"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.supervisor} - {self.student} - {self.comment}"
