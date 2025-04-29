@@ -337,7 +337,7 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
         try:
             student = Student.objects.get(user=request.user)
-            group=Group.objects.get(Q(student_1=student) | Q(student_2=student))
+            group=Group.objects.get(Q(student_1=student) | Q(student_2=student),status="accepted")
             supervisor=Supervisor.objects.get(id=serializer.validated_data["supervisor"])
             project=Project.objects.get(id=serializer.validated_data["project"])
             if SupervisorOfStudentGroup.objects.filter(
