@@ -132,8 +132,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    project_category = ProjectCategoriesSerializer(read_only=True)
-
     class Meta:
         model = Project
         fields = [
