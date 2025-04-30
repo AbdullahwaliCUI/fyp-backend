@@ -329,8 +329,14 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
             else:
                 return query_set
         except Group.DoesNotExist:
-            return super().get_queryset().filter(supervisor__user=self.request.user,status__in="{accepted, accepted_by_student}")
-
+            pass
+        except Student.DoesNotExist:
+            pass
+        try:
+           return super().get_queryset().filter(supervisor__user=self.request.user, status__in=["accepted","accepted_by_student"])
+        except Supervisor.DoesNotExist:
+            pass
+        return super().get_queryset()
 
     def post(self, request):
         serializer = SupervisorofStudentGroupSerializer(data=request.data)
@@ -360,40 +366,47 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
     def update(self, request, *args, **kwargs):
         try:
             id=self.request.GET.get("pk")
-            if not id:
-                return Response(
-                    {"message": "Supervisor request id not found"}, status=400
-                )
-            group=Group.objects.get(Q(student_1__user=self.request.user) | Q(student_2__user=self.request.user),status="accepted")
-            if not group:
-                return Response(
-                    {"message": "Group mate not found"}, status=404
-                )
-            if group.student_1.user==self.request.user:
-                response_student=group.student_2
-            elif group.student_2.user==self.request.user:
-                response_student=group.student_1
-            else:
-                return Response(
-                    {"message": "You are not a member of this group"}, status=404
-                )
+            try:
+                student=Student.objects.get(user=self.request.user)
+            except Supervisor.DoesNotExist:
+                student
+            if student:
+                if not id:
+                    return Response(
+                        {"message": "Supervisor request id not found"}, status=400
+                    )
+                group=Group.objects.get(Q(student_1__user=self.request.user) | Q(student_2__user=self.request.user),status="accepted")
+                if not group:
+                    return Response(
+                        {"message": "Group mate not found"}, status=404
+                    )
+                if group.student_1.user==self.request.user:
+                    response_student=group.student_2
+                elif group.student_2.user==self.request.user:
+                    response_student=group.student_1
+                else:
+                    return Response(
+                        {"message": "You are not a member of this group"}, status=404
+                    )
             supervisor_request = SupervisorOfStudentGroup.objects.get(id=id)
-            if supervisor_request.created_by.user== self.request.user:
-                return Response(
-                    {"message": "You cannot update this request"}, status=400
-                )
-            if supervisor_request.created_by!=response_student: 
-                return Response(
-                    {"message": "You cannot update this request"}, status=400
-                )   
+            if student:
+                if supervisor_request.created_by.user== self.request.user:
+                    return Response(
+                        {"message": "You cannot update this request"}, status=400
+                    )
+                if supervisor_request.created_by!=response_student: 
+                    return Response(
+                        {"message": "You cannot update this request"}, status=400
+                    )   
             serializer = SupervisorOfStudentGroupSerializer(
                 instance=supervisor_request, data=request.data, partial=True
             )
             if serializer.is_valid():
-                if serializer.validated_data.get("status") != "accepted_by_student":  
-                    return Response(
-                        {"message": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
-                    )    
+                if student:
+                    if serializer.validated_data.get("status") != "accepted_by_student":  
+                        return Response(
+                            {"message": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
+                        )    
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
