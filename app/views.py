@@ -28,7 +28,7 @@ from .models import (
     SupervisorOfStudentGroup,
 )
 from app.serializers.serializers import (
-    SupervisorStudentCommentsSerializer,
+    SupervisorStudentModelCommentsSerializer,
     CommentSerializer,
     ProjectCategoriesSerializer,
     GroupRequestSerializer,
@@ -46,7 +46,8 @@ from .serializers.field_serializers import (
     StudentLoginDetailSerializer,
     SupervisorLoginDetailSerializer,
     CommitteeMemberLoginDetailSerializer,
-    SupervisorofStudentGroupSerializer
+    SupervisorofStudentGroupSerializer,
+    SupervisorStudentCommentsSerializer
 )
 
 
@@ -402,35 +403,55 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
                 {"message": "Supervisor request not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-class SupervisorStudentCommentsAPIView(APIView):
+class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = SupervisorStudentModelCommentsSerializer
+    queryset = SupervisorStudentComments.objects.all()
+
+    def get_queryset(self):
+        student = Student.objects.get(user=self.request.user)
+        if student:
+            group_id= self.request.GET.get("group")
+            if group_id:
+                return super().get_queryset().filter(group=group_id)
+            return super().get_queryset()
+        return super().get_queryset()
+    
+                                                    
 
     def post(self, request):
-        student_id = request.data.get("student_id")
-        supervisor_id = request.data.get("supervisor_id")
-        comment = request.data.get("comment")
-        comment_by = request.data.get("comment_by")
-
+        serializer = SupervisorStudentCommentsSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        commented_by=None
         try:
-            student = Student.objects.filter(user=request.user).first()
-            supervisor = Supervisor.objects.filter(user=request.user).first()
-            if not student:
-                student = Student.objects.get(id=student_id)
-            if not supervisor:
-                supervisor = Supervisor.objects.get(id=supervisor_id)
-            supervisor_student_comment = SupervisorStudentComments.objects.create(
-                student=student,
-                supervisor=supervisor,
-                comment=comment,
-                comment_by=comment_by,
-            )
-            serializer = SupervisorStudentCommentsSerializer(supervisor_student_comment)
-            return Response(serializer.data, status=201)
+            group=Group.objects.get(id=serializer.validated_data["group"])
+        except Group.DoesNotExist:
+            return Response({"message": "Group not found"}, status=404)
+        try:
+            student = Student.objects.get(user=request.user)
+            commented_by="student"
         except Student.DoesNotExist:
-            return Response({"message": "Student not found"}, status=404)
-        except Supervisor.DoesNotExist:
-            return Response({"message": "Supervisor not found"}, status=404)
+            student=None
+        try:
+            supervisor = Supervisor.objects.get(user=request.user)   
+            commented_by="supervisor"   
+        except Supervisor.DoesNotExist: 
+            supervisor=None
+        if not student and not supervisor:  
+            return Response({"message": "You are not a member of this group"}, status=404)
+        student_supervisor_comment=SupervisorStudentComments(
+            comment=serializer.validated_data["comment"],
+            commented_by=commented_by,
+            group=group,
+            student=student,
+            supervisor=supervisor,
+        )
+        student_supervisor_comment.save()
+        return Response(
+            {"message": "Comment added successfully"}, status=status.HTTP_201_CREATED
+        )
 
 
 class SupervisorResponseAPIView(APIView):

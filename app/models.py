@@ -170,10 +170,13 @@ class SupervisorStudentComments(models.Model):
         ("supervisor", "Supervisor"),
     )
     student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name="student_comments"
+        Student, on_delete=models.SET_NULL, null=True, blank=True, related_name="student_comments"
     )
     supervisor = models.ForeignKey(
-        Supervisor, on_delete=models.CASCADE, related_name="supervisor_comments"
+        Supervisor, on_delete=models.SET_NULL, null=True, blank=True, related_name="supervisor_comments"
+    )
+    group=models.ForeignKey(
+        Group, on_delete=models.CASCADE, related_name="group_comments"
     )
     comment = models.TextField()
     commented_by = models.CharField(

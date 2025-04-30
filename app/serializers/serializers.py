@@ -180,11 +180,11 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
         ]
 
 
-class SupervisorStudentCommentsSerializer(serializers.ModelSerializer):
+class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
     student = StudentProfileSerializer(read_only=True)
     supervisor = SupervisorProfileSerializer(read_only=True)
 
     class Meta:
         model = SupervisorStudentComments
-        fields = ["id", "student", "supervisor", "comment", "comment_by", "created_at"]
+        fields = ["id", "group","student", "supervisor", "comment", "commented_by", "created_at",]
         read_only_fields = ["id", "created_at"]
