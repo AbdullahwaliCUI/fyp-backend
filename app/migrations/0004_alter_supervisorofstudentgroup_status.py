@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0003_alter_customuser_password_alter_group_status'),
+        ("app", "0003_alter_customuser_password_alter_group_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='supervisorofstudentgroup',
-            name='status',
-            field=models.CharField(choices=[('pending', 'Pending'), ('accepted_by_student', 'Accepted by Student'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('canceled', 'Canceled')], default='pending', max_length=20),
+            model_name="supervisorofstudentgroup",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "Pending"),
+                    ("accepted_by_student", "Accepted by Student"),
+                    ("accepted", "Accepted"),
+                    ("rejected", "Rejected"),
+                    ("canceled", "Canceled"),
+                ],
+                default="pending",
+                max_length=20,
+            ),
         ),
     ]

@@ -26,7 +26,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ["id","user", "registration_no", "department", "semester", "batch_no"]
+        fields = ["id", "user", "registration_no", "department", "semester", "batch_no"]
 
 
 class SupervisorProfileSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class SupervisorProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = ["id","user", "supervisor_id"]
+        fields = ["id", "user", "supervisor_id"]
 
 
 class CommitteeMemberProfileSerializer(serializers.ModelSerializer):
@@ -65,7 +65,6 @@ class GroupCategorySerializer(serializers.ModelSerializer):
         fields = ["project_category"]
 
 
-
 class GroupRequestSerializer(serializers.ModelSerializer):
     student_1 = serializers.PrimaryKeyRelatedField(
         queryset=Student.objects.all(), write_only=True
@@ -94,7 +93,7 @@ class GroupRequestSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         project_category = validated_data.pop("project_category")
         try:
-            obj= Group.objects.get(**validated_data)
+            obj = Group.objects.get(**validated_data)
         except Group.DoesNotExist:
             obj = Group(**validated_data)
         obj.project_category = project_category
@@ -161,7 +160,6 @@ class NewIdeaProjectSerializer(serializers.ModelSerializer):
         read_only = ["id", "created_at"]
 
 
-
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
     group = GroupRequestSerializer(read_only=True)
     supervisor = SupervisorProfileSerializer(read_only=True)
@@ -186,5 +184,13 @@ class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SupervisorStudentComments
-        fields = ["id", "group","student", "supervisor", "comment", "commented_by", "created_at",]
+        fields = [
+            "id",
+            "group",
+            "student",
+            "supervisor",
+            "comment",
+            "commented_by",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]

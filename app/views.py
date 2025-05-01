@@ -39,7 +39,7 @@ from app.serializers.serializers import (
     SupervisorOfStudentGroupSerializer,
     SupervisorProfileSerializer,
     CommitteeMemberProfileSerializer,
-    GroupCategorySerializer
+    GroupCategorySerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -47,7 +47,7 @@ from .serializers.field_serializers import (
     SupervisorLoginDetailSerializer,
     CommitteeMemberLoginDetailSerializer,
     SupervisorofStudentGroupSerializer,
-    SupervisorStudentCommentsSerializer
+    SupervisorStudentCommentsSerializer,
 )
 
 
@@ -143,7 +143,6 @@ class ProjectCategoriesView(ListAPIView):
     pagination_class = BasePagination
 
 
-
 class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -179,10 +178,10 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
 
     def update(self, request, *args, **kwargs):
         try:
-            grouo_id= request.GET.get("pk")
+            grouo_id = request.GET.get("pk")
             group = Group.objects.get(id=grouo_id)
-            if group.student_1.user== request.user:
-                serializer=GroupCategorySerializer(
+            if group.student_1.user == request.user:
+                serializer = GroupCategorySerializer(
                     instance=group, data=request.data, partial=True
                 )
             else:
@@ -298,16 +297,13 @@ class ListSuperisorAPIView(ListAPIView):
     pagination_class = BasePagination
 
     def get_queryset(self):
-        category=self.request.GET.get("category")
+        category = self.request.GET.get("category")
         if category:
-            return super().get_queryset().filter(
-                category__id=category
-            ) 
+            return super().get_queryset().filter(category__id=category)
         return super().get_queryset()
-    
 
 
-class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
+class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SupervisorOfStudentGroupSerializer
@@ -319,10 +315,10 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
         try:
             student = Student.objects.get(user=self.request.user)
             group = Group.objects.get(
-                Q(student_1=student) | Q(student_2=student),status="accepted"
+                Q(student_1=student) | Q(student_2=student), status="accepted"
             )
-            query_set=super().get_queryset().filter(group=group.id)
-            if requested == "to":  
+            query_set = super().get_queryset().filter(group=group.id)
+            if requested == "to":
                 return query_set.filter(created_by__user=self.request.user)
             elif requested == "from":
                 return query_set.exclude(created_by__user=self.request.user)
@@ -333,7 +329,14 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
         except Student.DoesNotExist:
             pass
         try:
-           return super().get_queryset().filter(supervisor__user=self.request.user, status__in=["accepted","accepted_by_student"])
+            return (
+                super()
+                .get_queryset()
+                .filter(
+                    supervisor__user=self.request.user,
+                    status__in=["accepted", "accepted_by_student"],
+                )
+            )
         except Supervisor.DoesNotExist:
             pass
         return super().get_queryset()
@@ -344,9 +347,13 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
         try:
             student = Student.objects.get(user=request.user)
-            group=Group.objects.get(Q(student_1=student) | Q(student_2=student),status="accepted")
-            supervisor=Supervisor.objects.get(id=serializer.validated_data["supervisor"])
-            project=Project.objects.get(id=serializer.validated_data["project"])
+            group = Group.objects.get(
+                Q(student_1=student) | Q(student_2=student), status="accepted"
+            )
+            supervisor = Supervisor.objects.get(
+                id=serializer.validated_data["supervisor"]
+            )
+            project = Project.objects.get(id=serializer.validated_data["project"])
             if SupervisorOfStudentGroup.objects.filter(
                 group=group.id, supervisor=supervisor
             ).exists():
@@ -362,12 +369,12 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
             return Response({"message": "Group mate not found"}, status=404)
         except Supervisor.DoesNotExist:
             return Response({"message": "Supervisor not found"}, status=404)
-        
+
     def update(self, request, *args, **kwargs):
         try:
-            id=self.request.GET.get("pk")
+            id = self.request.GET.get("pk")
             try:
-                student=Student.objects.get(user=self.request.user)
+                student = Student.objects.get(user=self.request.user)
             except Supervisor.DoesNotExist:
                 student
             if student:
@@ -375,46 +382,51 @@ class SendSupervisorRequestAPIView(CreateAPIView,ListAPIView,UpdateAPIView):
                     return Response(
                         {"message": "Supervisor request id not found"}, status=400
                     )
-                group=Group.objects.get(Q(student_1__user=self.request.user) | Q(student_2__user=self.request.user),status="accepted")
+                group = Group.objects.get(
+                    Q(student_1__user=self.request.user)
+                    | Q(student_2__user=self.request.user),
+                    status="accepted",
+                )
                 if not group:
-                    return Response(
-                        {"message": "Group mate not found"}, status=404
-                    )
-                if group.student_1.user==self.request.user:
-                    response_student=group.student_2
-                elif group.student_2.user==self.request.user:
-                    response_student=group.student_1
+                    return Response({"message": "Group mate not found"}, status=404)
+                if group.student_1.user == self.request.user:
+                    response_student = group.student_2
+                elif group.student_2.user == self.request.user:
+                    response_student = group.student_1
                 else:
                     return Response(
                         {"message": "You are not a member of this group"}, status=404
                     )
             supervisor_request = SupervisorOfStudentGroup.objects.get(id=id)
             if student:
-                if supervisor_request.created_by.user== self.request.user:
+                if supervisor_request.created_by.user == self.request.user:
                     return Response(
                         {"message": "You cannot update this request"}, status=400
                     )
-                if supervisor_request.created_by!=response_student: 
+                if supervisor_request.created_by != response_student:
                     return Response(
                         {"message": "You cannot update this request"}, status=400
-                    )   
+                    )
             serializer = SupervisorOfStudentGroupSerializer(
                 instance=supervisor_request, data=request.data, partial=True
             )
             if serializer.is_valid():
                 if student:
-                    if serializer.validated_data.get("status") != "accepted_by_student":  
+                    if serializer.validated_data.get("status") != "accepted_by_student":
                         return Response(
-                            {"message": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
-                        )    
+                            {"message": "Invalid status"},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except SupervisorOfStudentGroup.DoesNotExist:
             return Response(
-                {"message": "Supervisor request not found"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "Supervisor request not found"},
+                status=status.HTTP_404_NOT_FOUND,
             )
+
 
 class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
     authentication_classes = [JWTAuthentication]
@@ -425,36 +437,36 @@ class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
     def get_queryset(self):
         student = Student.objects.get(user=self.request.user)
         if student:
-            group_id= self.request.GET.get("group")
+            group_id = self.request.GET.get("group")
             if group_id:
                 return super().get_queryset().filter(group=group_id)
             return super().get_queryset()
         return super().get_queryset()
-    
-                                                    
 
     def post(self, request):
         serializer = SupervisorStudentCommentsSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-        commented_by=None
+        commented_by = None
         try:
-            group=Group.objects.get(id=serializer.validated_data["group"])
+            group = Group.objects.get(id=serializer.validated_data["group"])
         except Group.DoesNotExist:
             return Response({"message": "Group not found"}, status=404)
         try:
             student = Student.objects.get(user=request.user)
-            commented_by="student"
+            commented_by = "student"
         except Student.DoesNotExist:
-            student=None
+            student = None
         try:
-            supervisor = Supervisor.objects.get(user=request.user)   
-            commented_by="supervisor"   
-        except Supervisor.DoesNotExist: 
-            supervisor=None
-        if not student and not supervisor:  
-            return Response({"message": "You are not a member of this group"}, status=404)
-        student_supervisor_comment=SupervisorStudentComments(
+            supervisor = Supervisor.objects.get(user=request.user)
+            commented_by = "supervisor"
+        except Supervisor.DoesNotExist:
+            supervisor = None
+        if not student and not supervisor:
+            return Response(
+                {"message": "You are not a member of this group"}, status=404
+            )
+        student_supervisor_comment = SupervisorStudentComments(
             comment=serializer.validated_data["comment"],
             commented_by=commented_by,
             group=group,
@@ -495,7 +507,7 @@ class SupervisorResponseAPIView(APIView):
 
 class SupervisorLoginAPIView(APIView):
     def post(self, request):
-        serializer = SupervisorLoginDetailSerializer(request.data)
+        serializer = SupervisorLoginDetailSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
             supervisor = Supervisor.objects.filter(user__email=email).first()

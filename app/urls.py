@@ -17,7 +17,7 @@ from .views import (
     SupervisorprofileView,
     GroupComments,
     CommitteeMemberProfileView,
-    ListSuperisorAPIView
+    ListSuperisorAPIView,
 )
 
 urlpatterns = [

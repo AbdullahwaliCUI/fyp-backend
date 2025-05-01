@@ -27,10 +27,10 @@ class CommitteeMemberLoginDetailSerializer(serializers.Serializer):
 
 
 class SupervisorofStudentGroupSerializer(serializers.Serializer):
-    supervisor= serializers.IntegerField(required=True)
-    project= serializers.IntegerField(required=True)
+    supervisor = serializers.IntegerField(required=True)
+    project = serializers.IntegerField(required=True)
 
 
 class SupervisorStudentCommentsSerializer(serializers.Serializer):
-    group= serializers.IntegerField(required=True)
-    comment= serializers.CharField(max_length=500, required=True)
+    group = serializers.IntegerField(required=True)
+    comment = serializers.CharField(max_length=500, required=True)

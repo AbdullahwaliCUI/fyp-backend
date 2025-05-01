@@ -51,7 +51,7 @@ class Supervisor(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="supervisor_profile"
     )
     supervisor_id = models.CharField(max_length=100, unique=True)
-    category=models.ManyToManyField(
+    category = models.ManyToManyField(
         ProjectCategories, related_name="supervisor", blank=True
     )
 
@@ -133,7 +133,6 @@ class NewIdeaProject(models.Model):
         return f"{self.title} - {self.student}"
 
 
-
 class SupervisorOfStudentGroup(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending"),
@@ -170,12 +169,20 @@ class SupervisorStudentComments(models.Model):
         ("supervisor", "Supervisor"),
     )
     student = models.ForeignKey(
-        Student, on_delete=models.SET_NULL, null=True, blank=True, related_name="student_comments"
+        Student,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="student_comments",
     )
     supervisor = models.ForeignKey(
-        Supervisor, on_delete=models.SET_NULL, null=True, blank=True, related_name="supervisor_comments"
+        Supervisor,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="supervisor_comments",
     )
-    group=models.ForeignKey(
+    group = models.ForeignKey(
         Group, on_delete=models.CASCADE, related_name="group_comments"
     )
     comment = models.TextField()
