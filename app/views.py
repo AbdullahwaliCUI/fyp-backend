@@ -522,7 +522,7 @@ class SupervisorLoginAPIView(APIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class SupervisorprofileView(APIView):
+class SupervisorprofileView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SupervisorProfileSerializer
