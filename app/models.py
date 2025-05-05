@@ -133,6 +133,40 @@ class NewIdeaProject(models.Model):
         return f"{self.title} - {self.student}"
 
 
+class ScopeDocumentEvaluationCriteria(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+    problem_statement = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    validity_of_he_proposed_solution = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    motivation_behind_tools_and_technologies = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    modules = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    task_management = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    related_system_analysis = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    document_format = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+    plagiarism_report = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default="pending"
+    )
+
+
 class SupervisorOfStudentGroup(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending"),
@@ -155,6 +189,20 @@ class SupervisorOfStudentGroup(models.Model):
     created_by = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="supervisor_request_created_by"
     )
+    Scope_document_evaluation_form = models.OneToOneField(
+        ScopeDocumentEvaluationCriteria,
+        on_delete=models.CASCADE,
+        related_name="scope_document_evaluation_form",
+        blank=True,
+        null=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.Scope_document_evaluation_form:
+            self.Scope_document_evaluation_form = (
+                ScopeDocumentEvaluationCriteria.objects.create()
+            )
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ("group", "supervisor")

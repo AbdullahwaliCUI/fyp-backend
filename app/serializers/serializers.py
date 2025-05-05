@@ -13,6 +13,7 @@ from app.models import (
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
     Document,
+    ScopeDocumentEvaluationCriteria,
 )
 
 
@@ -158,7 +159,14 @@ class NewIdeaProjectSerializer(serializers.ModelSerializer):
             "proposal_file",
             "created_at",
         ]
-        read_only = ["id", "created_at"]
+        read_only_fields = ["id", "created_at"]
+
+
+class ScopeDocumentEvaluationCriteriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScopeDocumentEvaluationCriteria
+        fields = "__all__"
+        read_only_fields = ["id"]
 
 
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
@@ -176,6 +184,7 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "created_by",
+            "Scope_document_evaluation_form",
         ]
 
 

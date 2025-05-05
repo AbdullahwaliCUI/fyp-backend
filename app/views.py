@@ -28,6 +28,7 @@ from .models import (
     NewIdeaProject,
     SupervisorOfStudentGroup,
     Document,
+    ScopeDocumentEvaluationCriteria,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -44,6 +45,7 @@ from app.serializers.serializers import (
     GroupCategorySerializer,
     DocumentSerializer,
     DocumentStatusUpdateSerializer,
+    ScopeDocumentEvaluationCriteriaSerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -659,3 +661,20 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
                     {"message": "Supervisor not found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+
+class ScopeDocumentEvaluationCriteriaView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ScopeDocumentEvaluationCriteriaSerializer
+    queryset = ScopeDocumentEvaluationCriteria.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )

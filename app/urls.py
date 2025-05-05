@@ -21,6 +21,7 @@ from .views import (
     DocumentUploadAPIView,
     GroupDetailView,
     SendSupervisorRequestDetailAPIView,
+    ScopeDocumentEvaluationCriteriaView,
 )
 
 
@@ -96,4 +97,9 @@ urlpatterns = [
         name="supervisor-student-response",
     ),
     path("proposal-document/", DocumentUploadAPIView.as_view(), name="document-upload"),
+    path(
+        "scope_document_evaluation_criteria/<int:pk>/",
+        ScopeDocumentEvaluationCriteriaView.as_view(),
+        name="scope-document-evaluation-criteria",
+    ),
 ]
