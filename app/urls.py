@@ -18,7 +18,11 @@ from .views import (
     GroupComments,
     CommitteeMemberProfileView,
     ListSuperisorAPIView,
+    DocumentUploadAPIView,
+    GroupDetailView,
+    SendSupervisorRequestDetailAPIView,
 )
+
 
 urlpatterns = [
     path("student/login/", StudentLoginView.as_view(), name="student-login"),
@@ -49,6 +53,7 @@ urlpatterns = [
         name="project-categories",
     ),
     path("groupmate/request/", GroupRequestView.as_view(), name="groupmate-request"),
+    path("group/<int:pk>/", GroupDetailView.as_view(), name="group-detail"),
     path(
         "groupmate/<int:group>/comments/",
         GroupComments.as_view(),
@@ -81,8 +86,14 @@ urlpatterns = [
         name="supervisor-student-request",
     ),
     path(
+        "supervisor-student/<int:pk>/",
+        SendSupervisorRequestDetailAPIView.as_view(),
+        name="supervisor-student-request",
+    ),
+    path(
         "supervisor/student/response/",
         SupervisorResponseAPIView.as_view(),
         name="supervisor-student-response",
     ),
+    path("proposal-document/", DocumentUploadAPIView.as_view(), name="document-upload"),
 ]

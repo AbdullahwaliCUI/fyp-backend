@@ -193,3 +193,24 @@ class SupervisorStudentComments(models.Model):
 
     def __str__(self):
         return f"{self.supervisor} - {self.student} - {self.comment}"
+
+
+class Document(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("accepted_by_student", "Accepted by Student"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+        ("canceled", "Canceled"),
+    )
+    group = models.ForeignKey(
+        SupervisorOfStudentGroup, on_delete=models.CASCADE, related_name="documents"
+    )
+    uploaded_by = models.ForeignKey(
+        Student, on_delete=models.CASCADE, related_name="uploaded_documents"
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+
+    title = models.CharField(max_length=100)
+    uploaded_file = models.FileField(upload_to="documents/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)

@@ -11,6 +11,7 @@ from rest_framework.generics import (
     CreateAPIView,
     UpdateAPIView,
 )
+
 from django.db.models import Q
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -26,6 +27,7 @@ from .models import (
     Project,
     NewIdeaProject,
     SupervisorOfStudentGroup,
+    Document,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -40,6 +42,8 @@ from app.serializers.serializers import (
     SupervisorProfileSerializer,
     CommitteeMemberProfileSerializer,
     GroupCategorySerializer,
+    DocumentSerializer,
+    DocumentStatusUpdateSerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -209,6 +213,13 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
             )
 
 
+class GroupDetailView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = GroupRequestSerializer
+    queryset = Group.objects.all()
+
+
 class GroupComments(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -375,8 +386,8 @@ class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
             id = self.request.GET.get("pk")
             try:
                 student = Student.objects.get(user=self.request.user)
-            except Supervisor.DoesNotExist:
-                student
+            except Student.DoesNotExist:
+                student = None
             if student:
                 if not id:
                     return Response(
@@ -428,6 +439,14 @@ class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
             )
 
 
+class SendSupervisorRequestDetailAPIView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SupervisorOfStudentGroupSerializer
+    queryset = SupervisorOfStudentGroup.objects.all()
+    pagination_class = BasePagination
+
+
 class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -435,12 +454,9 @@ class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
     queryset = SupervisorStudentComments.objects.all()
 
     def get_queryset(self):
-        student = Student.objects.get(user=self.request.user)
-        if student:
-            group_id = self.request.GET.get("group")
-            if group_id:
-                return super().get_queryset().filter(group=group_id)
-            return super().get_queryset()
+        group_id = self.request.GET.get("group")
+        if group_id:
+            return super().get_queryset().filter(group=group_id)
         return super().get_queryset()
 
     def post(self, request):
@@ -557,3 +573,89 @@ class CommitteeMemberProfileView(APIView):
 
     def get_object(self):
         return self.get_queryset().get(user=self.request.user)
+
+
+class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = DocumentSerializer
+    queryset = Document.objects.all()
+
+    def get_queryset(self):
+        group = self.request.GET.get("group")
+        if group:
+            try:
+                Supervisor.objects.get(user=self.request.user)
+                return (
+                    super()
+                    .get_queryset()
+                    .filter(group=group, status__in=["accepted", "accepted_by_student"])
+                )
+            except Supervisor.DoesNotExist:
+                return super().get_queryset().filter(group=group)
+        return super().get_queryset()
+
+    def perform_create(self, serializer):
+        student = Student.objects.get(user=self.request.user)
+        group = SupervisorOfStudentGroup.objects.get(
+            Q(group__student_1=student) | Q(group__student_2=student),
+            group__status="accepted",
+        )
+        serializer.save(uploaded_by=student, group=group)
+
+    def update(self, request, *args, **kwargs):
+        document_id = self.request.GET.get("pk")
+        try:
+            student = Student.objects.get(user=self.request.user)
+            group = Group.objects.get(
+                Q(student_1=student) | Q(student_2=student), status="accepted"
+            )
+            document = Document.objects.get(id=document_id, group=group.id)
+            serializer = DocumentStatusUpdateSerializer(
+                instance=document, data=request.data, partial=True
+            )
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            if (
+                document.uploaded_by == student
+                and serializer.validated_data.get("status") == "accepted_by_student"
+            ):
+                return Response(
+                    {"message": "You cannot update this document"}, status=400
+                )
+            if serializer.validated_data.get("status") == "accepted":
+                return Response(
+                    {"message": "You cannot update this document"}, status=400
+                )
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Document.DoesNotExist:
+            return Response(
+                {"message": "Document not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Group.DoesNotExist:
+            return Response(
+                {"message": "Group mate not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Student.DoesNotExist:
+            try:
+                supervisor = Supervisor.objects.get(user=self.request.user)
+                document = Document.objects.get(
+                    id=document_id, group__supervisor=supervisor.id
+                )
+                serializer = DocumentStatusUpdateSerializer(
+                    instance=document, data=request.data, partial=True
+                )
+                if not serializer.is_valid():
+                    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Document.DoesNotExist:
+                return Response(
+                    {"message": "Document not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+            except Supervisor.DoesNotExist:
+                return Response(
+                    {"message": "Supervisor not found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )

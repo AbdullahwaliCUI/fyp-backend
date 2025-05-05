@@ -17,8 +17,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from .project_views import DocumentDownloadView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("app/", include("app.urls")),
+    path(
+        "documents/<str:filename>/",
+        DocumentDownloadView.as_view(),
+        name="document-download",
+    ),
 ]

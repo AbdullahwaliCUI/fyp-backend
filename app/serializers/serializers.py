@@ -12,6 +12,7 @@ from app.models import (
     NewIdeaProject,
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
+    Document,
 )
 
 
@@ -161,7 +162,6 @@ class NewIdeaProjectSerializer(serializers.ModelSerializer):
 
 
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
-    group = GroupRequestSerializer(read_only=True)
     supervisor = SupervisorProfileSerializer(read_only=True)
     project = ProjectSerializer(read_only=True)
 
@@ -194,3 +194,26 @@ class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["id", "created_at"]
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    uploaded_by = StudentProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Document
+        fields = [
+            "id",
+            "title",
+            "uploaded_file",
+            "uploaded_at",
+            "status",
+            "group",
+            "uploaded_by",
+        ]
+        read_only_fields = ["uploaded_at", "status", "group", "uploaded_by"]
+
+
+class DocumentStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ["status"]
