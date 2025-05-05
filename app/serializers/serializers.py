@@ -164,6 +164,7 @@ class NewIdeaProjectSerializer(serializers.ModelSerializer):
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
     supervisor = SupervisorProfileSerializer(read_only=True)
     project = ProjectSerializer(read_only=True)
+    group = GroupRequestSerializer(read_only=True)
 
     class Meta:
         model = SupervisorOfStudentGroup
