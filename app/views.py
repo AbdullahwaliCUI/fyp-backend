@@ -610,9 +610,9 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
         try:
             student = Student.objects.get(user=self.request.user)
             group = SupervisorOfStudentGroup.objects.get(
-            Q(group__student_1=student) | Q(group__student_2=student),
-            status="accepted",
-        )
+                Q(group__student_1=student) | Q(group__student_2=student),
+                status="accepted",
+            )
             document = Document.objects.get(id=document_id, group=group.id)
             serializer = DocumentStatusUpdateSerializer(
                 instance=document, data=request.data, partial=True
