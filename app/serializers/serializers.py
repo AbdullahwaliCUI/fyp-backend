@@ -27,17 +27,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class StudentProfileSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
     group_id = serializers.SerializerMethodField(read_only=True)
-    
+
     def get_group_id(self, obj):
         group = SupervisorOfStudentGroup.objects.filter(
-            Q(group__student_1=obj) | Q(group__student_2=obj), 
+            Q(group__student_1=obj) | Q(group__student_2=obj),
             status="accepted",
         ).first()
         return group.id if group else None
 
     class Meta:
         model = Student
-        fields = ["id", "user", "registration_no", "department", "semester", "batch_no","group_id"]
+        fields = [
+            "id",
+            "user",
+            "registration_no",
+            "department",
+            "semester",
+            "batch_no",
+            "group_id",
+        ]
 
 
 class SupervisorProfileSerializer(serializers.ModelSerializer):
