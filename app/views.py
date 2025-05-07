@@ -596,7 +596,15 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
                     .filter(group=group, status__in=["accepted", "accepted_by_student"])
                 )
             except Supervisor.DoesNotExist:
-                return super().get_queryset().filter(group=group)
+                try:
+                    CommitteeMember.objects.get(user=self.request.user)
+                    return (
+                    super()
+                    .get_queryset()
+                    .filter(group=group, status__in=["accepted", "accepted_by_student"])
+                )
+                except CommitteeMember.DoesNotExist:
+                    return super().get_queryset().filter(group=group)
         return super().get_queryset()
 
     def perform_create(self, serializer):
