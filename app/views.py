@@ -29,6 +29,7 @@ from .models import (
     SupervisorOfStudentGroup,
     Document,
     ScopeDocumentEvaluationCriteria,
+    CommitteeMemberPanel,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -46,6 +47,7 @@ from app.serializers.serializers import (
     DocumentSerializer,
     DocumentStatusUpdateSerializer,
     ScopeDocumentEvaluationCriteriaSerializer,
+    PanelSerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -672,10 +674,38 @@ class ScopeDocumentEvaluationCriteriaView(RetrieveAPIView, UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         try:
-            Supervisor.objects.get(user=self.request.user)
+            CommitteeMember.objects.get(user=self.request.user)
             return super().update(request, *args, **kwargs)
-        except Supervisor.DoesNotExist:
+        except CommitteeMember.DoesNotExist:
             return Response(
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+
+class PanelAPIView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = PanelSerializer
+    queryset = CommitteeMemberPanel.objects.all()
+
+
+class CommitteeMemberPanelDetailAPIView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommitteeMemberProfileSerializer
+    queryset = CommitteeMember.objects.all()
+
+
+class ProjectDetailAPiView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+
+class SupervisorStudentDetailAPIView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SupervisorOfStudentGroupSerializer
+    queryset = SupervisorOfStudentGroup.objects.all()

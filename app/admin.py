@@ -12,6 +12,7 @@ from .models import (
     NewIdeaProject,
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
+    CommitteeMemberPanel,
 )
 
 
@@ -26,3 +27,4 @@ admin.site.register(Project)
 admin.site.register(NewIdeaProject)
 admin.site.register(SupervisorStudentComments)
 admin.site.register(SupervisorOfStudentGroup)
+admin.site.register(CommitteeMemberPanel)

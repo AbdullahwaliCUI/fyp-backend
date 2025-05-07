@@ -22,6 +22,10 @@ from .views import (
     GroupDetailView,
     SendSupervisorRequestDetailAPIView,
     ScopeDocumentEvaluationCriteriaView,
+    PanelAPIView,
+    CommitteeMemberPanelDetailAPIView,
+    ProjectDetailAPiView,
+    SupervisorStudentDetailAPIView,
 )
 
 
@@ -101,5 +105,25 @@ urlpatterns = [
         "scope_document_evaluation_criteria/<int:pk>/",
         ScopeDocumentEvaluationCriteriaView.as_view(),
         name="scope-document-evaluation-criteria",
+    ),
+    path(
+        "panel/<int:pk>/",
+        PanelAPIView.as_view(),
+        name="panel-detail",
+    ),
+    path(
+        "committee-member/<int:pk>/",
+        CommitteeMemberPanelDetailAPIView.as_view(),
+        name="committee-member-detail",
+    ),
+    path(
+        "project/<int:pk>/",
+        ProjectDetailAPiView.as_view(),
+        name="project-detail",
+    ),
+    path(
+        "supervisor-student/<int:pk>/",
+        SupervisorStudentDetailAPIView.as_view(),
+        name="supervisor-student-detail",
     ),
 ]

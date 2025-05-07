@@ -59,16 +59,6 @@ class Supervisor(models.Model):
         return self.user.username
 
 
-class CommitteeMember(models.Model):
-    user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, related_name="committee_member_profile"
-    )
-    committee_id = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.user.username
-
-
 class Group(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending"),
@@ -106,9 +96,19 @@ class GroupCreationComment(models.Model):
         return f"{self.student} - {self.comment}"
 
 
+class CommitteeMemberPanel(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.name if self.name else "Committee Member Panel"
+
+
 class Project(models.Model):
     project_category = models.ForeignKey(
         ProjectCategories, on_delete=models.CASCADE, related_name="project_category"
+    )
+    panel = models.ForeignKey(
+        CommitteeMemberPanel, on_delete=models.CASCADE, related_name="projects"
     )
     project_name = models.CharField(max_length=100)
     project_description = models.TextField()
@@ -183,7 +183,7 @@ class SupervisorOfStudentGroup(models.Model):
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="supervisor_project"
+        Project, on_delete=models.CASCADE, related_name="groups"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
@@ -241,6 +241,19 @@ class SupervisorStudentComments(models.Model):
 
     def __str__(self):
         return f"{self.supervisor} - {self.student} - {self.comment}"
+
+
+class CommitteeMember(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="committee_member_profile"
+    )
+    committee_id = models.CharField(max_length=100, unique=True)
+    panel = models.ForeignKey(
+        CommitteeMemberPanel, on_delete=models.CASCADE, related_name="committee_member"
+    )
+
+    def __str__(self):
+        return self.user.username
 
 
 class Document(models.Model):

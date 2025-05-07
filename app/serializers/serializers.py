@@ -15,6 +15,7 @@ from app.models import (
     SupervisorOfStudentGroup,
     Document,
     ScopeDocumentEvaluationCriteria,
+    CommitteeMemberPanel,
 )
 
 
@@ -61,7 +62,14 @@ class CommitteeMemberProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CommitteeMember
-        fields = ["user", "committee_id"]
+        fields = ["id", "user", "committee_id", "panel"]
+
+
+class PanelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommitteeMemberPanel
+        fields = ["id", "name", "committee_member", "projects"]
+        read_only_fields = ["id"]
 
 
 class ProjectCategoriesSerializer(serializers.ModelSerializer):
@@ -159,6 +167,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "project_description",
             "language",
             "functionalities",
+            "groups",
         ]
 
 
