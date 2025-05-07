@@ -540,7 +540,7 @@ class SupervisorLoginAPIView(APIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class SupervisorprofileView(RetrieveAPIView):
+class SupervisorProfileView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SupervisorProfileSerializer
@@ -552,14 +552,14 @@ class SupervisorprofileView(RetrieveAPIView):
 
 class CommitteeMemberLoginAPIView(APIView):
     def post(self, request):
-        serializer = CommitteeMemberLoginDetailSerializer(request.data)
+        serializer = CommitteeMemberLoginDetailSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
-            committeeMember = CommitteeMember.objects.filter(user__email=email).first()
-            if committeeMember and committeeMember.user.check_password(
+            committee_member = CommitteeMember.objects.filter(user__email=email).first()
+            if committee_member and committee_member.user.check_password(
                 serializer.validated_data.get("password")
             ):
-                token = get_tokens_for_user(committeeMember.user)
+                token = get_tokens_for_user(committee_member.user)
                 return Response(token, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "Invalid credentials"}, status=401)

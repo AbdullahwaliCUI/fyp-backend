@@ -14,7 +14,7 @@ from .views import (
     SupervisorResponseAPIView,
     SupervisorLoginAPIView,
     CommitteeMemberLoginAPIView,
-    SupervisorprofileView,
+    SupervisorProfileView,
     GroupComments,
     CommitteeMemberProfileView,
     ListSuperisorAPIView,
@@ -33,7 +33,7 @@ urlpatterns = [
     ),
     path(
         "supervisor/profile/",
-        SupervisorprofileView.as_view(),
+        SupervisorProfileView.as_view(),
         name="supervisor-profile",
     ),
     path(
