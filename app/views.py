@@ -567,7 +567,7 @@ class CommitteeMemberLoginAPIView(APIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CommitteeMemberProfileView(APIView):
+class CommitteeMemberProfileView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = CommitteeMemberProfileSerializer
