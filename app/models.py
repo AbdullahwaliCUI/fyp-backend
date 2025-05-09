@@ -162,9 +162,7 @@ class ScopeDocumentEvaluationCriteria(models.Model):
     document_format = models.CharField(
         max_length=100, choices=STATUS_CHOICES, default="pending"
     )
-    plagiarism_report = models.CharField(
-        max_length=100, choices=STATUS_CHOICES, default="pending"
-    )
+    plagiarism_report = models.BooleanField(null=True, blank=True)
 
 
 class SupervisorOfStudentGroup(models.Model):
