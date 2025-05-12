@@ -158,6 +158,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    
+    groups_data = serializers.SerializerMethodField(read_only=True)
+    
+    def get_groups_data(self, obj):
+        return obj.groups.filter(
+            status="accepted"
+        ).values_list(
+            flat = True
+        )
     class Meta:
         model = Project
         fields = [
@@ -167,7 +176,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "project_description",
             "language",
             "functionalities",
-            "groups",
+            "groups_data",
         ]
 
 
