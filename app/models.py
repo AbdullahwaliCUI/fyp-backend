@@ -26,13 +26,18 @@ class CustomUser(AbstractUser):
 
 
 class Student(models.Model):
+    SEMESTER_CHOICES = (
+        ("semester_6", "Semester 6"),
+        ("semester_7", "Semester 7"),
+        ("semester_8", "Semester 8"),
+    )
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="student_profile"
     )
 
     registration_no = models.CharField(max_length=20, unique=True)
     department = models.CharField(max_length=100, blank=True, null=True)
-    semester = models.CharField(max_length=100, blank=True, null=True)
+    semester = models.CharField(max_length=100, choices=SEMESTER_CHOICES, blank=True, null=True)
     batch_no = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
@@ -257,6 +262,11 @@ class CommitteeMember(models.Model):
 
 
 class Document(models.Model):
+    DOCUMENT_TYPE_CHOICES = (
+        ("scope_document", "Scope Document"),
+        ("srs_document", "SRS Document"),
+        ("sdd_document", "SDD Document")
+    )
     STATUS_CHOICES = (
         ("pending", "Pending"),
         ("accepted_by_student", "Accepted by Student"),
@@ -270,6 +280,7 @@ class Document(models.Model):
     uploaded_by = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="uploaded_documents"
     )
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPE_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     title = models.CharField(max_length=100)
@@ -277,3 +288,39 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
+class CommitteeMemberTemplates(models.Model):
+    TEMPLATE_TYPE_CHOICES = (
+        ("srs_template", "SRS Template"),
+        ("sdd_template", "SDD Template"),
+    )
+    SEMESTER_CHOICES = (
+        ("semester_6", "Semester 6"),
+        ("semester_7", "Semester 7"),
+        ("semester_8", "Semester 8"),
+    )
+    semester = models.CharField(max_length=100, choices=SEMESTER_CHOICES)
+    template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPE_CHOICES)
+    uploaded_by = models.ForeignKey(
+        CommitteeMember,
+        on_delete=models.CASCADE,
+        related_name="uploaded_templates",
+        blank=True,
+        null=True,  
+    )
+    title = models.CharField(max_length=100)
+    uploaded_file = models.FileField(upload_to="templates/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+
+class SRSEvaluationSupervisor(models.Model):
+
+    regularity = models.IntegerField(default=0)
+    fr_mapping = models.IntegerField(default=0)
+    nfr_mapping = models.IntegerField(default=0)
+    requirement_analysis = models.IntegerField(default=0)
+    mock_defined = models.IntegerField(default=0)
+    template_followed = models.IntegerField(default=0)
+    technical_writeup = models.IntegerField(default=0)
+    seminar_participation = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -16,6 +16,7 @@ from app.models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
+    CommitteeMemberTemplates,
 )
 
 
@@ -194,7 +195,7 @@ class ScopeDocumentEvaluationCriteriaSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id"]
 
-
+ 
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
     supervisor = SupervisorProfileSerializer(read_only=True)
     project = ProjectSerializer(read_only=True)
@@ -234,17 +235,20 @@ class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
 
 class DocumentSerializer(serializers.ModelSerializer):
     uploaded_by = StudentProfileSerializer(read_only=True)
+    document_type=serializers.CharField(required=False)
 
     class Meta:
         model = Document
         fields = [
             "id",
             "title",
+            "document_type",
             "uploaded_file",
             "uploaded_at",
             "status",
             "group",
             "uploaded_by",
+
         ]
         read_only_fields = ["uploaded_at", "status", "group", "uploaded_by"]
 
@@ -253,3 +257,11 @@ class DocumentStatusUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = ["status"]
+
+
+class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
+    uploaded_by = CommitteeMemberProfileSerializer(read_only=True)
+    template_type=serializers.CharField(required=False)
+    class Meta:
+        model=CommitteeMemberTemplates
+        fields=["id","title","uploaded_by","uploaded_file","uploaded_at","semester"]

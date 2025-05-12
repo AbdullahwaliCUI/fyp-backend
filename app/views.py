@@ -30,6 +30,7 @@ from .models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
+    CommitteeMemberTemplates,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -48,6 +49,7 @@ from app.serializers.serializers import (
     DocumentStatusUpdateSerializer,
     ScopeDocumentEvaluationCriteriaSerializer,
     PanelSerializer,
+    CommitteeMemberTemplatesSerializer
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -587,33 +589,42 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
 
     def get_queryset(self):
         group = self.request.GET.get("group")
+        queryset= super().get_queryset().filter(document_type=self.kwargs.get("document_type"))
         if group:
+    
             try:
                 Supervisor.objects.get(user=self.request.user)
-                return (
-                    super()
-                    .get_queryset()
+                return ( 
+                    queryset
                     .filter(group=group, status__in=["accepted", "accepted_by_student"])
                 )
             except Supervisor.DoesNotExist:
                 try:
                     CommitteeMember.objects.get(user=self.request.user)
                     return (
-                    super()
-                    .get_queryset()
+                    queryset
                     .filter(group=group, status__in=["accepted", "accepted_by_student"])
                 )
                 except CommitteeMember.DoesNotExist:
-                    return super().get_queryset().filter(group=group)
-        return super().get_queryset()
+                    return queryset.filter(group=group)
+        return queryset
 
-    def perform_create(self, serializer):
+    
+    def create(self, request, *args, **kwargs):
+        document_type = self.kwargs.get("document_type")
+        if not document_type in ["scope_document", "srs_document","sdd_document"]:
+            return Response(
+                {"message": "Invalid document type"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer= self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         student = Student.objects.get(user=self.request.user)
         group = SupervisorOfStudentGroup.objects.get(
             Q(group__student_1=student) | Q(group__student_2=student),
             status="accepted",
         )
-        serializer.save(uploaded_by=student, group=group)
+        serializer.save(uploaded_by=student, group=group, document_type=document_type)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         document_id = self.request.GET.get("pk")
@@ -717,3 +728,31 @@ class SupervisorStudentDetailAPIView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = SupervisorOfStudentGroupSerializer
     queryset = SupervisorOfStudentGroup.objects.all()
+
+
+class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommitteeMemberTemplatesSerializer
+    queryset = CommitteeMemberTemplates.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(template_type=self.kwargs.get("template_type"))
+        semester= self.request.GET.get("semester")
+        if semester:
+            return queryset.filter(semester=semester)
+        return queryset
+    
+    def create(self, request, *args, **kwargs):
+        template_type = self.kwargs.get("template_type")
+        if not template_type in ["srs_template","sdd_template"]:
+            return Response(
+                {"message": "Invalid template type"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer= self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        committee_member = CommitteeMember.objects.get(user=self.request.user)
+        serializer.save(uploaded_by=committee_member, template_type=template_type)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+

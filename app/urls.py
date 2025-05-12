@@ -26,6 +26,7 @@ from .views import (
     CommitteeMemberPanelDetailAPIView,
     ProjectDetailAPiView,
     SupervisorStudentDetailAPIView,
+    CommitteeMemberTemplatesAPIView
 )
 
 
@@ -100,7 +101,7 @@ urlpatterns = [
         SupervisorResponseAPIView.as_view(),
         name="supervisor-student-response",
     ),
-    path("proposal-document/", DocumentUploadAPIView.as_view(), name="document-upload"),
+    path("proposal-document/<str:document_type>/", DocumentUploadAPIView.as_view(), name="document-upload"),
     path(
         "scope_document_evaluation_criteria/<int:pk>/",
         ScopeDocumentEvaluationCriteriaView.as_view(),
@@ -126,4 +127,9 @@ urlpatterns = [
         SupervisorStudentDetailAPIView.as_view(),
         name="supervisor-student-detail",
     ),
+    path(
+        "srs_template/<str:template_type>/",
+        CommitteeMemberTemplatesAPIView.as_view(),
+        name="srs-template",
+    )
 ]

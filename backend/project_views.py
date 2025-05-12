@@ -15,3 +15,16 @@ class DocumentDownloadView(APIView):
             )
         else:
             raise Http404("File not found.")
+        
+
+class SRSTemplateDownloadView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, filename):
+        file_path = os.path.join(settings.MEDIA_ROOT, "templates", filename)
+        if os.path.exists(file_path):
+            return FileResponse(
+                open(file_path, "rb"), as_attachment=True, filename=filename
+            )
+        else:
+            raise Http404("File not found.")

@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from .project_views import DocumentDownloadView
+from .project_views import DocumentDownloadView,SRSTemplateDownloadView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,5 +26,10 @@ urlpatterns = [
         "documents/<str:filename>/",
         DocumentDownloadView.as_view(),
         name="document-download",
+    ),
+    path(
+        "templates/<str:filename>/",
+        SRSTemplateDownloadView.as_view(),
+        name="template-download",
     ),
 ]
