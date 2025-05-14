@@ -31,6 +31,7 @@ from .models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
+    SRSEvaluation,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -49,7 +50,8 @@ from app.serializers.serializers import (
     DocumentStatusUpdateSerializer,
     ScopeDocumentEvaluationCriteriaSerializer,
     PanelSerializer,
-    CommitteeMemberTemplatesSerializer
+    CommitteeMemberTemplatesSerializer,
+    SRSEvaluationSerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -589,34 +591,34 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
 
     def get_queryset(self):
         group = self.request.GET.get("group")
-        queryset= super().get_queryset().filter(document_type=self.kwargs.get("document_type"))
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(document_type=self.kwargs.get("document_type"))
+        )
         if group:
-    
             try:
                 Supervisor.objects.get(user=self.request.user)
-                return ( 
-                    queryset
-                    .filter(group=group, status__in=["accepted", "accepted_by_student"])
+                return queryset.filter(
+                    group=group, status__in=["accepted", "accepted_by_student"]
                 )
             except Supervisor.DoesNotExist:
                 try:
                     CommitteeMember.objects.get(user=self.request.user)
-                    return (
-                    queryset
-                    .filter(group=group, status__in=["accepted", "accepted_by_student"])
-                )
+                    return queryset.filter(
+                        group=group, status__in=["accepted", "accepted_by_student"]
+                    )
                 except CommitteeMember.DoesNotExist:
                     return queryset.filter(group=group)
         return queryset
 
-    
     def create(self, request, *args, **kwargs):
         document_type = self.kwargs.get("document_type")
-        if not document_type in ["scope_document", "srs_document","sdd_document"]:
+        if document_type not in ["scope_document", "srs_document", "sdd_document"]:
             return Response(
                 {"message": "Invalid document type"}, status=status.HTTP_400_BAD_REQUEST
             )
-        serializer= self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         student = Student.objects.get(user=self.request.user)
         group = SupervisorOfStudentGroup.objects.get(
@@ -702,6 +704,23 @@ class ScopeDocumentEvaluationCriteriaView(RetrieveAPIView, UpdateAPIView):
             )
 
 
+class SRSEvaluationView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SRSEvaluationSerializer
+    queryset = SRSEvaluation.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            CommitteeMember.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except CommitteeMember.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+
 class PanelAPIView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -737,22 +756,24 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
     queryset = CommitteeMemberTemplates.objects.all()
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(template_type=self.kwargs.get("template_type"))
-        semester= self.request.GET.get("semester")
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(template_type=self.kwargs.get("template_type"))
+        )
+        semester = self.request.GET.get("semester")
         if semester:
             return queryset.filter(semester=semester)
         return queryset
-    
+
     def create(self, request, *args, **kwargs):
         template_type = self.kwargs.get("template_type")
-        if not template_type in ["srs_template","sdd_template"]:
+        if template_type not in ["srs_template", "sdd_template"]:
             return Response(
                 {"message": "Invalid template type"}, status=status.HTTP_400_BAD_REQUEST
             )
-        serializer= self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         committee_member = CommitteeMember.objects.get(user=self.request.user)
         serializer.save(uploaded_by=committee_member, template_type=template_type)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-

@@ -17,6 +17,7 @@ from app.models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
+    SRSEvaluation,
 )
 
 
@@ -159,15 +160,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    
     groups_data = serializers.SerializerMethodField(read_only=True)
-    
+
     def get_groups_data(self, obj):
-        return obj.groups.filter(
-            status="accepted"
-        ).values_list(
-            flat = True
-        )
+        return obj.groups.filter(status="accepted").values_list(flat=True)
+
     class Meta:
         model = Project
         fields = [
@@ -204,7 +201,7 @@ class ScopeDocumentEvaluationCriteriaSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id"]
 
- 
+
 class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
     supervisor = SupervisorProfileSerializer(read_only=True)
     project = ProjectSerializer(read_only=True)
@@ -221,6 +218,7 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "created_at",
             "created_by",
             "Scope_document_evaluation_form",
+            "srs_evaluation",
         ]
 
 
@@ -244,7 +242,7 @@ class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
 
 class DocumentSerializer(serializers.ModelSerializer):
     uploaded_by = StudentProfileSerializer(read_only=True)
-    document_type=serializers.CharField(required=False)
+    document_type = serializers.CharField(required=False)
 
     class Meta:
         model = Document
@@ -257,7 +255,6 @@ class DocumentSerializer(serializers.ModelSerializer):
             "status",
             "group",
             "uploaded_by",
-
         ]
         read_only_fields = ["uploaded_at", "status", "group", "uploaded_by"]
 
@@ -270,7 +267,36 @@ class DocumentStatusUpdateSerializer(serializers.ModelSerializer):
 
 class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
     uploaded_by = CommitteeMemberProfileSerializer(read_only=True)
-    template_type=serializers.CharField(required=False)
+    template_type = serializers.CharField(required=False)
+
     class Meta:
-        model=CommitteeMemberTemplates
-        fields=["id","title","uploaded_by","uploaded_file","uploaded_at","semester"]
+        model = CommitteeMemberTemplates
+        fields = [
+            "id",
+            "title",
+            "uploaded_by",
+            "uploaded_file",
+            "uploaded_at",
+            "semester",
+        ]
+
+
+class SRSEvaluationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SRSEvaluation
+        fields = [
+            "id",
+            "student_1_marks",
+            "student_2_marks",
+            "regularity",
+            "srs_are_frs_mapped_to_the_problem",
+            "srs_are_nfr_mapped_to_the_problem",
+            "is_srs_storyboarding",
+            "according_to_requirement",
+            "is_srs_template_followed",
+            "is_write_up_correct",
+            "student_participation",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]

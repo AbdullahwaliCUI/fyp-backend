@@ -37,7 +37,9 @@ class Student(models.Model):
 
     registration_no = models.CharField(max_length=20, unique=True)
     department = models.CharField(max_length=100, blank=True, null=True)
-    semester = models.CharField(max_length=100, choices=SEMESTER_CHOICES, blank=True, null=True)
+    semester = models.CharField(
+        max_length=100, choices=SEMESTER_CHOICES, blank=True, null=True
+    )
     batch_no = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
@@ -168,8 +170,79 @@ class ScopeDocumentEvaluationCriteria(models.Model):
         max_length=100, choices=STATUS_CHOICES, default="pending"
     )
     plagiarism_report = models.BooleanField(null=True, blank=True)
-    comments= models.TextField(blank=True, null=True)
-    evaluation_status=models.BooleanField(blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
+    evaluation_status = models.BooleanField(blank=True, null=True)
+
+    def __str__(self):
+        return f"scope_document_{self.id}"
+
+
+class SRSEvaluation(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+
+    student_1_marks = models.IntegerField(null=True, blank=True)
+    student_2_marks = models.IntegerField(null=True, blank=True)
+    regularity = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    srs_are_frs_mapped_to_the_problem = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    srs_are_nfr_mapped_to_the_problem = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_srs_storyboarding = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    according_to_requirement = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_srs_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_write_up_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    student_participation = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict() -> dict:
+        return {
+            "pending": 0,
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks) -> float:
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self) -> float:
+        return (
+            self.calculate(self.regularity, 5)
+            + self.calculate(self.srs_are_frs_mapped_to_the_problem, 4)
+            + self.calculate(self.srs_are_nfr_mapped_to_the_problem, 1)
+            + self.calculate(self.is_srs_storyboarding, 3)
+            + self.calculate(self.according_to_requirement, 2)
+            + self.calculate(self.is_srs_template_followed, 2)
+            + self.calculate(self.is_write_up_correct, 3)
+            + self.calculate(self.student_participation, 5)
+        )
+
+    def __str__(self):
+        return f"srs_{self.id}"
 
 
 class SupervisorOfStudentGroup(models.Model):
@@ -201,12 +274,21 @@ class SupervisorOfStudentGroup(models.Model):
         blank=True,
         null=True,
     )
+    srs_evaluation = models.OneToOneField(
+        SRSEvaluation,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
 
     def save(self, *args, **kwargs):
         if not self.Scope_document_evaluation_form:
             self.Scope_document_evaluation_form = (
                 ScopeDocumentEvaluationCriteria.objects.create()
             )
+        if not self.srs_evaluation:
+            self.srs_evaluation = SRSEvaluation.objects.create()
         super().save(*args, **kwargs)
 
     class Meta:
@@ -265,7 +347,7 @@ class Document(models.Model):
     DOCUMENT_TYPE_CHOICES = (
         ("scope_document", "Scope Document"),
         ("srs_document", "SRS Document"),
-        ("sdd_document", "SDD Document")
+        ("sdd_document", "SDD Document"),
     )
     STATUS_CHOICES = (
         ("pending", "Pending"),
@@ -305,15 +387,14 @@ class CommitteeMemberTemplates(models.Model):
         on_delete=models.CASCADE,
         related_name="uploaded_templates",
         blank=True,
-        null=True,  
+        null=True,
     )
     title = models.CharField(max_length=100)
     uploaded_file = models.FileField(upload_to="templates/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    
+
 
 class SRSEvaluationSupervisor(models.Model):
-
     regularity = models.IntegerField(default=0)
     fr_mapping = models.IntegerField(default=0)
     nfr_mapping = models.IntegerField(default=0)

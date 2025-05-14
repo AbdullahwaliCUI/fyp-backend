@@ -15,7 +15,7 @@ class DocumentDownloadView(APIView):
             )
         else:
             raise Http404("File not found.")
-        
+
 
 class SRSTemplateDownloadView(APIView):
     # permission_classes = [IsAuthenticated]

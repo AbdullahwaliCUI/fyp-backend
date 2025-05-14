@@ -4,19 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0020_alter_srstemplate_semester_srsdocument'),
+        ("app", "0020_alter_srstemplate_semester_srsdocument"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='document',
-            name='document_type',
-            field=models.CharField(choices=[('scope_document', 'Scope Document'), ('srs_document', 'SRS Document'), ('sdd_document', 'SDD Document')], default=1, max_length=20),
+            model_name="document",
+            name="document_type",
+            field=models.CharField(
+                choices=[
+                    ("scope_document", "Scope Document"),
+                    ("srs_document", "SRS Document"),
+                    ("sdd_document", "SDD Document"),
+                ],
+                default=1,
+                max_length=20,
+            ),
             preserve_default=False,
         ),
         migrations.DeleteModel(
-            name='SRSDocument',
+            name="SRSDocument",
         ),
     ]

@@ -5,25 +5,50 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0017_scopedocumentevaluationcriteria_comments_and_more'),
+        ("app", "0017_scopedocumentevaluationcriteria_comments_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='student',
-            name='semester',
-            field=models.CharField(blank=True, choices=[('semester_6', 'Semester 6'), ('semester_7', 'Semester 7'), ('semester_8', 'Semester 8')], max_length=100, null=True),
+            model_name="student",
+            name="semester",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("semester_6", "Semester 6"),
+                    ("semester_7", "Semester 7"),
+                    ("semester_8", "Semester 8"),
+                ],
+                max_length=100,
+                null=True,
+            ),
         ),
         migrations.CreateModel(
-            name='SRSTemplate',
+            name="SRSTemplate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('uploaded_file', models.FileField(upload_to='templates/')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('uploaded_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='uploaded_templates', to='app.committeemember')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("uploaded_file", models.FileField(upload_to="templates/")),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="uploaded_templates",
+                        to="app.committeemember",
+                    ),
+                ),
             ],
         ),
     ]

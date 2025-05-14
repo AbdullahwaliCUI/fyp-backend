@@ -5,28 +5,70 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0019_srstemplate_semester'),
+        ("app", "0019_srstemplate_semester"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='srstemplate',
-            name='semester',
-            field=models.CharField(choices=[('semester_6', 'Semester 6'), ('semester_7', 'Semester 7'), ('semester_8', 'Semester 8')], default=1, max_length=100),
+            model_name="srstemplate",
+            name="semester",
+            field=models.CharField(
+                choices=[
+                    ("semester_6", "Semester 6"),
+                    ("semester_7", "Semester 7"),
+                    ("semester_8", "Semester 8"),
+                ],
+                default=1,
+                max_length=100,
+            ),
             preserve_default=False,
         ),
         migrations.CreateModel(
-            name='SRSDocument',
+            name="SRSDocument",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('accepted_by_student', 'Accepted by Student'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('canceled', 'Canceled')], default='pending', max_length=20)),
-                ('title', models.CharField(max_length=100)),
-                ('uploaded_file', models.FileField(upload_to='srs_documents/')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='srs_documents', to='app.supervisorofstudentgroup')),
-                ('uploaded_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='uploaded_srs_documents', to='app.student')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("accepted_by_student", "Accepted by Student"),
+                            ("accepted", "Accepted"),
+                            ("rejected", "Rejected"),
+                            ("canceled", "Canceled"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("uploaded_file", models.FileField(upload_to="srs_documents/")),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="srs_documents",
+                        to="app.supervisorofstudentgroup",
+                    ),
+                ),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="uploaded_srs_documents",
+                        to="app.student",
+                    ),
+                ),
             ],
         ),
     ]
