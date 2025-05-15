@@ -17,7 +17,8 @@ from app.models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
-    SRSEvaluation,
+    SRSEvaluationSupervisor,
+    SRSEvaluationCommitteeMember
 )
 
 
@@ -218,7 +219,8 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "created_at",
             "created_by",
             "Scope_document_evaluation_form",
-            "srs_evaluation",
+            "srs_evaluation_supervisor",
+            "srs_evaluation_committee_member",
         ]
 
 
@@ -281,9 +283,9 @@ class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
         ]
 
 
-class SRSEvaluationSerializer(serializers.ModelSerializer):
+class SRSEvaluationSupervisorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SRSEvaluation
+        model = SRSEvaluationSupervisor
         fields = [
             "id",
             "student_1_marks",
@@ -299,4 +301,30 @@ class SRSEvaluationSerializer(serializers.ModelSerializer):
             "comment",
             "total_marks",
         ]
+        read_only_fields = ["id"]
+
+
+class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SRSEvaluationCommitteeMember
+        fields = [
+            "id",
+            "student_1_marks",
+            "student_2_marks",
+            "analysis_of_existing_systems",
+            "problem_defined",
+            "proposed_solution",
+            "tools_technologies",
+            "frs_mapped",
+            "nfr_mapped",
+            "requirements_analysis",
+            "mocks_defined",
+            "srs_template_followed",
+            "technical_writeup_correct",
+            "domain_knowledge",
+            "qa_ability",
+            "presentation_attire",
+            "comment"
+            "total_marks",
+            ]
         read_only_fields = ["id"]

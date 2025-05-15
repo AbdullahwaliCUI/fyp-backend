@@ -27,7 +27,8 @@ from .views import (
     ProjectDetailAPiView,
     SupervisorStudentDetailAPIView,
     CommitteeMemberTemplatesAPIView,
-    SRSEvaluationView,
+    SRSEvaluationSupervisorView,
+    SRSEvaluationCommitteeMemberView,
 )
 
 
@@ -113,9 +114,14 @@ urlpatterns = [
         name="scope-document-evaluation-criteria",
     ),
     path(
-        "srs-evaluation/<int:pk>/",
-        SRSEvaluationView.as_view(),
-        name="srs-evaluation",
+        "srs-evaluation-supervisor/<int:pk>/",
+        SRSEvaluationSupervisorView.as_view(),
+        name="srs-evaluation-supervisor",
+    ),
+    path(
+        "srs-evaluation-committee-member/<int:pk>/",
+        SRSEvaluationCommitteeMemberView.as_view(),
+        name="srs-evaluation-committee-member",
     ),
     path(
         "panel/<int:pk>/",

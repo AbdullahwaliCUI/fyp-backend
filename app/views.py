@@ -31,7 +31,8 @@ from .models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
-    SRSEvaluation,
+    SRSEvaluationSupervisor,
+    SRSEvaluationCommitteeMember,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -51,7 +52,8 @@ from app.serializers.serializers import (
     ScopeDocumentEvaluationCriteriaSerializer,
     PanelSerializer,
     CommitteeMemberTemplatesSerializer,
-    SRSEvaluationSerializer,
+    SRSEvaluationSupervisorSerializer,
+    SRSEvaluationCommitteeMemberSerializer
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -704,11 +706,28 @@ class ScopeDocumentEvaluationCriteriaView(RetrieveAPIView, UpdateAPIView):
             )
 
 
-class SRSEvaluationView(RetrieveAPIView, UpdateAPIView):
+class SRSEvaluationSupervisorView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = SRSEvaluationSerializer
-    queryset = SRSEvaluation.objects.all()
+    serializer_class = SRSEvaluationSupervisorSerializer
+    queryset = SRSEvaluationSupervisor.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+
+class SRSEvaluationCommitteeMemberView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SRSEvaluationCommitteeMemberSerializer
+    queryset = SRSEvaluationCommitteeMember.objects.all()
 
     def update(self, request, *args, **kwargs):
         try:
@@ -719,7 +738,6 @@ class SRSEvaluationView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-
 
 class PanelAPIView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
