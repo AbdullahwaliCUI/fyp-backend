@@ -33,6 +33,8 @@ from .models import (
     CommitteeMemberTemplates,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
+    SDDEvaluationSupervisor,
+    SDDEvaluationCommitteeMember
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -53,7 +55,9 @@ from app.serializers.serializers import (
     PanelSerializer,
     CommitteeMemberTemplatesSerializer,
     SRSEvaluationSupervisorSerializer,
-    SRSEvaluationCommitteeMemberSerializer
+    SRSEvaluationCommitteeMemberSerializer,
+    SDDEvaluationSupervisorSerializer,
+    SDDEvaluationCommitteeMemberSerializer
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -739,6 +743,41 @@ class SRSEvaluationCommitteeMemberView(RetrieveAPIView, UpdateAPIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+
+class SDDEvaluationSupervisorView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SDDEvaluationSupervisorSerializer
+    queryset = SDDEvaluationSupervisor.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+
+class SDDEvaluationCommitteeMemberView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SDDEvaluationCommitteeMemberSerializer
+    queryset = SDDEvaluationCommitteeMember.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            CommitteeMember.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except CommitteeMember.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+                
 class PanelAPIView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

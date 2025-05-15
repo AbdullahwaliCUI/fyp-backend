@@ -29,6 +29,8 @@ from .views import (
     CommitteeMemberTemplatesAPIView,
     SRSEvaluationSupervisorView,
     SRSEvaluationCommitteeMemberView,
+    SDDEvaluationCommitteeMemberView,
+    SDDEvaluationSupervisorView,
 )
 
 
@@ -122,6 +124,16 @@ urlpatterns = [
         "srs-evaluation-committee-member/<int:pk>/",
         SRSEvaluationCommitteeMemberView.as_view(),
         name="srs-evaluation-committee-member",
+    ),
+    path(
+        "sdd-evaluation-committee-member/<int:pk>/",
+        SDDEvaluationCommitteeMemberView.as_view(),
+        name="sdd-evaluation-committee-member",
+    ),
+    path(
+        "sdd-evaluation-supervisor/<int:pk>/",
+        SDDEvaluationSupervisorView.as_view(),
+        name="sdd-evaluation-supervisor",
     ),
     path(
         "panel/<int:pk>/",

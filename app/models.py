@@ -289,7 +289,6 @@ class SRSEvaluationCommitteeMember(models.Model):
     def total_marks(self):
         return (
             self.calculate(self.analysis_of_existing_systems, 0.5) +
-            self.calculate(self.project_idea, 5) +
             self.calculate(self.problem_defined, 2.5) +
             self.calculate(self.proposed_solution, 1.5) +
             self.calculate(self.tools_technologies, 0.5) +
@@ -306,6 +305,115 @@ class SRSEvaluationCommitteeMember(models.Model):
     
     def __str__(self):
         return f"srs_{self.id}"
+
+class SDDEvaluationSupervisor(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+
+    student_1_marks = models.IntegerField(null=True, blank=True)
+    student_2_marks = models.IntegerField(null=True, blank=True)
+    data_representation_diagram= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending") 
+    design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
+    algorithms_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    module_completion_status = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_sdd_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_technical_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
+    regularity = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
+    seminar_participation = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending") 
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict() -> dict:
+        return {
+            "pending": 0,
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks) -> float:
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self) -> float:
+        return (
+            self.calculate(self.data_representation_diagram, 2)
+            + self.calculate(self.process_flow, 2)
+            + self.calculate(self.design_models, 4)
+            + self.calculate(self.algorithms_defined, 2)
+            + self.calculate(self.module_completion_status, 5)
+            + self.calculate(self.is_sdd_template_followed, 2)
+            + self.calculate(self.is_technical_writeup_correct, 3)
+            + self.calculate(self.regularity, 2.5)
+            + self.calculate(self.seminar_participation, 2.5)
+        )
+
+    def __str__(self):
+        return f"sdd_{self.id}"
+    
+
+class SDDEvaluationCommitteeMember(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+
+    student_1_marks = models.IntegerField(null=True, blank=True)
+    student_2_marks = models.IntegerField(null=True, blank=True)
+    data_representation_diagram = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    sdd_design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    algorithm_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    modules_completion_status = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    sdd_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    techincal_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    project_domain_knowledge = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict() -> dict:
+        return {
+            "pending": 0,
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks) -> float:
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self) -> float:
+        return (
+            self.calculate(self.data_representation_diagram, 2)
+            + self.calculate(self.process_flow, 2)
+            + self.calculate(self.sdd_design_models, 5)
+            + self.calculate(self.algorithm_defined, 2)
+            + self.calculate(self.modules_completion_status, 5)
+            + self.calculate(self.sdd_template_followed, 2)
+            + self.calculate(self.techincal_writeup_correct, 3)
+            + self.calculate(self.project_domain_knowledge, 1)
+            + self.calculate(self.qa_ability, 2)
+            + self.calculate(self.proper_attire, 1)
+        )
+
+    def __str__(self):
+        return f"sdd_{self.id}"
 
 
 class SupervisorOfStudentGroup(models.Model):
@@ -351,6 +459,20 @@ class SupervisorOfStudentGroup(models.Model):
         blank=True,
         null=True,
     )
+    sdd_evaluation_supervisor= models.OneToOneField(
+        SDDEvaluationSupervisor,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
+    sdd_evaluation_committee_member= models.OneToOneField(
+        SDDEvaluationCommitteeMember,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
 
     def save(self, *args, **kwargs):
         if not self.Scope_document_evaluation_form:
@@ -361,6 +483,10 @@ class SupervisorOfStudentGroup(models.Model):
             self.srs_evaluation_supervisor = SRSEvaluationSupervisor.objects.create()
         if not self.srs_evaluation_committee_member:
             self.srs_evaluation_committee_member = SRSEvaluationCommitteeMember.objects.create()
+        if not self.sdd_evaluation_supervisor:
+            self.sdd_evaluation_supervisor = SDDEvaluationSupervisor.objects.create()
+        if not self.sdd_evaluation_committee_member:
+            self.sdd_evaluation_committee_member = SDDEvaluationCommitteeMember.objects.create()
         super().save(*args, **kwargs)
 
     class Meta:
@@ -368,6 +494,8 @@ class SupervisorOfStudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.group} - {self.supervisor} - {self.status}"
+
+
 
 
 class SupervisorStudentComments(models.Model):

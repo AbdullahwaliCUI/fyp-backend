@@ -18,7 +18,9 @@ from app.models import (
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
     SRSEvaluationSupervisor,
-    SRSEvaluationCommitteeMember
+    SRSEvaluationCommitteeMember,
+    SDDEvaluationSupervisor,
+    SDDEvaluationCommitteeMember
 )
 
 
@@ -221,6 +223,8 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "Scope_document_evaluation_form",
             "srs_evaluation_supervisor",
             "srs_evaluation_committee_member",
+            "sdd_evaluation_supervisor",
+            "sdd_evaluation_committee_member",
         ]
 
 
@@ -327,4 +331,49 @@ class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "comment"
             "total_marks",
             ]
+        read_only_fields = ["id"]
+
+
+class SDDEvaluationSupervisorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SDDEvaluationSupervisor
+        fields = [
+            "id",
+            "student_1_marks",
+            "student_2_marks",
+            "data_representation_diagram",
+            "process_flow",
+            "design_models",
+            "algorithms_defined",
+            "module_completion_status",
+            "is_sdd_template_followed",
+            "is_technical_writeup_correct",
+            "regularity",
+            "seminar_participation",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]
+
+
+class SDDEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SDDEvaluationCommitteeMember
+        fields = [
+            "id",
+            "student_1_marks",
+            "student_2_marks",
+            "data_representation_diagram",
+            "process_flow",
+            "sdd_design_models",
+            "algorithm_defined",
+            "modules_completion_status",
+            "sdd_template_followed",
+            "techincal_writeup_correct",
+            "project_domain_knowledge",
+            "qa_ability",
+            "proper_attire",
+            "comment"
+            "total_marks",
+        ]
         read_only_fields = ["id"]
