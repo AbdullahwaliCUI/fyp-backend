@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0016_alter_scopedocumentevaluationcriteria_plagiarism_report'),
+        ("app", "0016_alter_scopedocumentevaluationcriteria_plagiarism_report"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='scopedocumentevaluationcriteria',
-            name='comments',
+            model_name="scopedocumentevaluationcriteria",
+            name="comments",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='scopedocumentevaluationcriteria',
-            name='evaluation_status',
+            model_name="scopedocumentevaluationcriteria",
+            name="evaluation_status",
             field=models.BooleanField(blank=True, null=True),
         ),
     ]

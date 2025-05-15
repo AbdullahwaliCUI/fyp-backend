@@ -13,8 +13,8 @@ from .models import (
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
     CommitteeMemberPanel,
-    SRSEvaluationSupervisor,
     ScopeDocumentEvaluationCriteria,
+    SRSEvaluation,
 )
 
 
@@ -30,5 +30,5 @@ admin.site.register(NewIdeaProject)
 admin.site.register(SupervisorStudentComments)
 admin.site.register(SupervisorOfStudentGroup)
 admin.site.register(CommitteeMemberPanel)
-admin.site.register(SRSEvaluationSupervisor)
 admin.site.register(ScopeDocumentEvaluationCriteria)
+admin.site.register(SRSEvaluation)

@@ -5,15 +5,18 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0014_alter_project_panel'),
+        ("app", "0014_alter_project_panel"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='supervisorofstudentgroup',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='app.project'),
+            model_name="supervisorofstudentgroup",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="groups",
+                to="app.project",
+            ),
         ),
     ]

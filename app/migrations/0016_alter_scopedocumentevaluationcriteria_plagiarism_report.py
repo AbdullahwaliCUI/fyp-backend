@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0015_alter_supervisorofstudentgroup_project'),
+        ("app", "0015_alter_supervisorofstudentgroup_project"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='scopedocumentevaluationcriteria',
-            name='plagiarism_report',
+            model_name="scopedocumentevaluationcriteria",
+            name="plagiarism_report",
             field=models.BooleanField(blank=True, null=True),
         ),
     ]
