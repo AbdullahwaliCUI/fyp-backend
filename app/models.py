@@ -313,14 +313,50 @@ class CommitteeMemberTemplates(models.Model):
     
 
 class SRSEvaluationSupervisor(models.Model):
+   PERCENTAGE_CHOICES = [
+    (15, '10%-20% (Marginal)'),
+    (40, '30%-50% (Adequate)'),
+    (70, '60%-80% (Good)'),
+    (95, '90%-100% (Excellent)'),
+    ]
+   
+   regularity_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   fr_mapping_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   nfr_mapping_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   requirement_analysis_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   mock_defined_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   template_followed_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   technical_writeup_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   seminar_participation_percent = models.IntegerField(choices=PERCENTAGE_CHOICES, default=0)
+   created_at = models.DateTimeField(auto_now_add=True)
 
-    regularity = models.IntegerField(default=0)
-    fr_mapping = models.IntegerField(default=0)
-    nfr_mapping = models.IntegerField(default=0)
-    requirement_analysis = models.IntegerField(default=0)
-    mock_defined = models.IntegerField(default=0)
-    template_followed = models.IntegerField(default=0)
-    technical_writeup = models.IntegerField(default=0)
-    seminar_participation = models.IntegerField(default=0)
+   def get_calculated_mark(self, percent, max_mark):
+        return round((percent / 100) * max_mark, 2)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+   @property
+   def total_marks(self):
+        return (
+            self.get_calculated_mark(self.regularity_percent, 5) +
+            self.get_calculated_mark(self.fr_mapping_percent, 4) +
+            self.get_calculated_mark(self.nfr_mapping_percent, 1) +
+            self.get_calculated_mark(self.requirement_analysis_percent, 3) +
+            self.get_calculated_mark(self.mock_defined_percent, 2) +
+            self.get_calculated_mark(self.template_followed_percent, 2) +
+            self.get_calculated_mark(self.technical_writeup_percent, 3) +
+            self.get_calculated_mark(self.seminar_participation_percent, 5)
+        )
+   @property
+   def percentage(self):
+        return round((self.total_marks / 25) * 100, 2)
+
+   @property
+   def grade(self):
+        percent = self.percentage
+        if percent >= 90:
+            return "Excellent"
+        elif percent >= 60:
+            return "Good"
+        elif percent >= 30:
+            return "Adequate"
+        else:
+            return "Marginal"

@@ -17,6 +17,7 @@ from app.models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
+    SRSEvaluationSupervisor
 )
 
 
@@ -274,3 +275,10 @@ class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
     class Meta:
         model=CommitteeMemberTemplates
         fields=["id","title","uploaded_by","uploaded_file","uploaded_at","semester"]
+
+
+class SRSEvaluationSupervisorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SRSEvaluationSupervisor
+        fields = "__all__"
+        read_only_fields = ["id"]

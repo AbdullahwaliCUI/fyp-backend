@@ -26,7 +26,8 @@ from .views import (
     CommitteeMemberPanelDetailAPIView,
     ProjectDetailAPiView,
     SupervisorStudentDetailAPIView,
-    CommitteeMemberTemplatesAPIView
+    CommitteeMemberTemplatesAPIView,
+    SRSEvaluationSupervisorAPIView
 )
 
 
@@ -131,5 +132,10 @@ urlpatterns = [
         "srs_template/<str:template_type>/",
         CommitteeMemberTemplatesAPIView.as_view(),
         name="srs-template",
-    )
+    ),
+    path(
+        "srs_evaluation_supervisor_criteria/<int:pk>/",
+        SRSEvaluationSupervisorAPIView.as_view(),
+        name="srs-evaluation-supervisor-criteria",
+    ),
 ]

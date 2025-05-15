@@ -31,6 +31,7 @@ from .models import (
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
     CommitteeMemberTemplates,
+    SRSEvaluationSupervisor
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -49,7 +50,8 @@ from app.serializers.serializers import (
     DocumentStatusUpdateSerializer,
     ScopeDocumentEvaluationCriteriaSerializer,
     PanelSerializer,
-    CommitteeMemberTemplatesSerializer
+    CommitteeMemberTemplatesSerializer,
+    SRSEvaluationSupervisorSerializer
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -756,3 +758,19 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class SRSEvaluationSupervisorAPIView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SRSEvaluationSupervisorSerializer
+    queryset = SRSEvaluationSupervisor.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
