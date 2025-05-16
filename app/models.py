@@ -345,7 +345,7 @@ class SDDEvaluationSupervisor(models.Model):
     @property
     def total_marks(self) -> float:
         return (
-            self.calculate(self.data_representation_diagram, 2)
+             self.calculate(self.data_representation_diagram, 2)
             + self.calculate(self.process_flow, 2)
             + self.calculate(self.design_models, 4)
             + self.calculate(self.algorithms_defined, 2)

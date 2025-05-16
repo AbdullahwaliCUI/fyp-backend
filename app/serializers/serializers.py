@@ -320,7 +320,7 @@ class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "proposed_solution",
             "tools_technologies",
             "frs_mapped",
-            "nfr_mapped",
+            "nfrs_mapped",
             "requirements_analysis",
             "mocks_defined",
             "srs_template_followed",
