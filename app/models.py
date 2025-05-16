@@ -185,9 +185,6 @@ class SRSEvaluationSupervisor(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-
-    student_1_marks = models.IntegerField(null=True, blank=True)
-    student_2_marks = models.IntegerField(null=True, blank=True)
     regularity = models.CharField(
         max_length=15, choices=STATUS_CHOICES, default="pending"
     )
@@ -253,9 +250,6 @@ class SRSEvaluationCommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    student_1_marks = models.IntegerField(null=True, blank=True)
-    student_2_marks = models.IntegerField(null=True, blank=True)
-
     analysis_of_existing_systems = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
     problem_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
     proposed_solution = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
@@ -314,9 +308,6 @@ class SDDEvaluationSupervisor(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-
-    student_1_marks = models.IntegerField(null=True, blank=True)
-    student_2_marks = models.IntegerField(null=True, blank=True)
     data_representation_diagram= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
     process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending") 
     design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
@@ -368,9 +359,6 @@ class SDDEvaluationCommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-
-    student_1_marks = models.IntegerField(null=True, blank=True)
-    student_2_marks = models.IntegerField(null=True, blank=True)
     data_representation_diagram = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
     process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
     sdd_design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")

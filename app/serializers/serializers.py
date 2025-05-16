@@ -328,7 +328,7 @@ class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "domain_knowledge",
             "qa_ability",
             "presentation_attire",
-            "comment"
+            "comment",
             "total_marks",
             ]
         read_only_fields = ["id"]
@@ -373,7 +373,7 @@ class SDDEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "project_domain_knowledge",
             "qa_ability",
             "proper_attire",
-            "comment"
+            "comment",
             "total_marks",
         ]
         read_only_fields = ["id"]
