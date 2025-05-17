@@ -402,7 +402,180 @@ class SDDEvaluationCommitteeMember(models.Model):
 
     def __str__(self):
         return f"sdd_{self.id}"
+    
 
+class Evaluation3Supervisor(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    regularity = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict():
+        return {
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks):
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self):
+        return (
+            self.calculate(self.module_completion, 3)
+            + self.calculate(self.software_testing, 4)
+            + self.calculate(self.regularity, 3)
+            + self.calculate(self.is_template_followed, 2)
+            + self.calculate(self.is_writeup_correct, 3)
+        )
+
+    def __str__(self):
+        return f"supervisor_eval_{self.id}"
+    
+
+class Evaluation3CommitteeMember(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict():
+        return {
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks):
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self):
+        return (
+            self.calculate(self.module_completion, 4)
+            + self.calculate(self.software_testing, 4)
+            + self.calculate(self.qa_ability, 2.5)
+            + self.calculate(self.proper_attire, 0.5)
+            + self.calculate(self.is_template_followed, 1)
+            + self.calculate(self.is_writeup_correct, 3)
+        )
+
+    def __str__(self):
+        return f"committee_member_eval_{self.id}"
+    
+
+class Evaluation4Supervisor(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    student_participation_seminar = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict():
+        return {
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks):
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self):
+        return (
+            self.calculate(self.module_completion, 5)
+            + self.calculate(self.student_participation_seminar, 5)
+            + self.calculate(self.is_template_followed, 2)
+            + self.calculate(self.is_writeup_correct, 3)
+        )
+
+    def __str__(self):
+        return f"supervisor_eval_{self.id}"
+    
+
+class Evaluation4CommitteeMember(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("marginal", "Marginal"),
+        ("adequate", "Adequate"),
+        ("good", "Good"),
+        ("excellent", "Excellent"),
+    )
+    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+
+    comment = models.CharField(max_length=255, null=True, blank=True)
+
+    @staticmethod
+    def percentages_dict():
+        return {
+            "marginal": 15,
+            "adequate": 40,
+            "good": 70,
+            "excellent": 95,
+        }
+
+    @classmethod
+    def calculate(cls, key, marks):
+        return (cls.percentages_dict().get(key, 0) / 100) * marks
+
+    @property
+    def total_marks(self):
+        return (
+            self.calculate(self.module_completion, 4)
+            + self.calculate(self.software_testing, 4)
+            + self.calculate(self.qa_ability, 2.5)
+            + self.calculate(self.proper_attire, 0.5)
+            + self.calculate(self.is_template_followed, 1)
+            + self.calculate(self.is_writeup_correct, 3)
+        )
+
+    def __str__(self):
+        return f"committee_member_eval_{self.id}"
 
 class SupervisorOfStudentGroup(models.Model):
     STATUS_CHOICES = (
@@ -461,6 +634,34 @@ class SupervisorOfStudentGroup(models.Model):
         blank=True,
         null=True,
     )
+    evaluation3_supervisor= models.OneToOneField(
+        Evaluation3Supervisor,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
+    evaluation3_committee_member= models.OneToOneField(
+        Evaluation3CommitteeMember,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
+    evaluation4_supervisor= models.OneToOneField(
+        Evaluation4Supervisor,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
+    evaluation4_committee_member= models.OneToOneField(
+        Evaluation4CommitteeMember,
+        on_delete=models.CASCADE,
+        related_name="supervisor_of_students",
+        blank=True,
+        null=True,
+    )
 
     def save(self, *args, **kwargs):
         if not self.Scope_document_evaluation_form:
@@ -475,6 +676,14 @@ class SupervisorOfStudentGroup(models.Model):
             self.sdd_evaluation_supervisor = SDDEvaluationSupervisor.objects.create()
         if not self.sdd_evaluation_committee_member:
             self.sdd_evaluation_committee_member = SDDEvaluationCommitteeMember.objects.create()
+        if not self.evaluation3_supervisor:
+            self.evaluation3_supervisor = Evaluation3Supervisor.objects.create()
+        if not self.evaluation3_committee_member:
+            self.evaluation3_committee_member = Evaluation3CommitteeMember.objects.create()
+        if not self.evaluation4_supervisor:
+            self.evaluation4_supervisor = Evaluation4Supervisor.objects.create()
+        if not self.evaluation4_committee_member:
+            self.evaluation4_committee_member = Evaluation4CommitteeMember.objects.create()
         super().save(*args, **kwargs)
 
     class Meta:
@@ -482,7 +691,6 @@ class SupervisorOfStudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.group} - {self.supervisor} - {self.status}"
-
 
 
 
@@ -581,3 +789,18 @@ class CommitteeMemberTemplates(models.Model):
     uploaded_file = models.FileField(upload_to="templates/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+
+class ChatRoom(models.Model):
+    MESSAGE_BY_CHOICES = (
+        ("student", "Student"),
+        ("supervisor", "Supervisor"),
+    )
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="chat_messages")
+    student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, related_name="student_messages")
+    supervisor = models.ForeignKey(Supervisor, on_delete=models.SET_NULL, null=True, blank=True, related_name="supervisor_messages")
+    message = models.TextField()
+    sent_by = models.CharField(max_length=20, choices=MESSAGE_BY_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sent_by}: {self.message[:30]}"

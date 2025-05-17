@@ -16,11 +16,17 @@ from app.models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
+
     CommitteeMemberTemplates,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
     SDDEvaluationSupervisor,
-    SDDEvaluationCommitteeMember
+    SDDEvaluationCommitteeMember,
+    Evaluation3Supervisor,
+    Evaluation3CommitteeMember,
+    Evaluation4Supervisor,
+    Evaluation4CommitteeMember,
+    ChatRoom,
 )
 
 
@@ -225,6 +231,10 @@ class SupervisorOfStudentGroupSerializer(serializers.ModelSerializer):
             "srs_evaluation_committee_member",
             "sdd_evaluation_supervisor",
             "sdd_evaluation_committee_member",
+            "evaluation3_supervisor",
+            "evaluation3_committee_member",
+            "evaluation4_supervisor",
+            "evaluation4_committee_member",
         ]
 
 
@@ -292,8 +302,6 @@ class SRSEvaluationSupervisorSerializer(serializers.ModelSerializer):
         model = SRSEvaluationSupervisor
         fields = [
             "id",
-            "student_1_marks",
-            "student_2_marks",
             "regularity",
             "srs_are_frs_mapped_to_the_problem",
             "srs_are_nfr_mapped_to_the_problem",
@@ -313,8 +321,6 @@ class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
         model = SRSEvaluationCommitteeMember
         fields = [
             "id",
-            "student_1_marks",
-            "student_2_marks",
             "analysis_of_existing_systems",
             "problem_defined",
             "proposed_solution",
@@ -339,8 +345,6 @@ class SDDEvaluationSupervisorSerializer(serializers.ModelSerializer):
         model = SDDEvaluationSupervisor
         fields = [
             "id",
-            "student_1_marks",
-            "student_2_marks",
             "data_representation_diagram",
             "process_flow",
             "design_models",
@@ -361,8 +365,6 @@ class SDDEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
         model = SDDEvaluationCommitteeMember
         fields = [
             "id",
-            "student_1_marks",
-            "student_2_marks",
             "data_representation_diagram",
             "process_flow",
             "sdd_design_models",
@@ -377,3 +379,87 @@ class SDDEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "total_marks",
         ]
         read_only_fields = ["id"]
+
+
+class Evaluation3SupervisorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluation3Supervisor
+        fields = [
+            "id",
+            "module_completion",
+            "software_testing",
+            "regularity",
+            "project_domain_knowledge",
+            "is_template_followed",
+            "is_writeup_correct",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]
+
+
+class Evaluation3CommitteeMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluation3CommitteeMember
+        fields = [
+            "id",
+            "module_completion",
+            "software_testing",
+            "qa_ability",
+            "proper_attire",
+            "is_template_followed",
+            "is_writeup_correct",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]
+
+
+class Evaluation4SupervisorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluation4Supervisor
+        fields = [
+            "id",
+            "module_completion",
+            "student_participation_seminar",
+            "is_template_followed",
+            "is_writeup_correct",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]
+
+
+class Evaluation4CommitteeMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluation4CommitteeMember
+        fields = [
+            "id",
+            "module_completion",
+            "software_testing",
+            "qa_ability",
+            "proper_attire",
+            "is_template_followed",
+            "is_writeup_correct",
+            "comment",
+            "total_marks",
+        ]
+        read_only_fields = ["id"]
+
+
+class ChatRoomSerializer(serializers.ModelSerializer):
+    student = StudentProfileSerializer(read_only=True)
+    supervisor = SupervisorProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ChatRoom
+        fields = [
+            "id",
+            "group",
+            "student",
+            "supervisor",
+            "message",
+            "sent_by",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]

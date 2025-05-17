@@ -16,6 +16,14 @@ from .models import (
     ScopeDocumentEvaluationCriteria,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
+    SDDEvaluationCommitteeMember,
+    SDDEvaluationSupervisor,
+    Evaluation3Supervisor,
+    Evaluation3CommitteeMember,
+    Evaluation4CommitteeMember,
+    Evaluation4Supervisor,
+    ChatRoom,
+
 )
 
 
@@ -34,3 +42,11 @@ admin.site.register(CommitteeMemberPanel)
 admin.site.register(ScopeDocumentEvaluationCriteria)
 admin.site.register(SRSEvaluationSupervisor)
 admin.site.register(SRSEvaluationCommitteeMember)
+admin.site.register(SDDEvaluationSupervisor)
+admin.site.register(SDDEvaluationCommitteeMember)
+admin.site.register(Evaluation3Supervisor)
+admin.site.register(Evaluation3CommitteeMember)
+admin.site.register(Evaluation4Supervisor)
+admin.site.register(Evaluation4CommitteeMember)
+admin.site.register(ChatRoom)
+

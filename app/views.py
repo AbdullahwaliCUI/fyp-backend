@@ -34,7 +34,12 @@ from .models import (
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
     SDDEvaluationSupervisor,
-    SDDEvaluationCommitteeMember
+    SDDEvaluationCommitteeMember,
+    Evaluation3Supervisor,
+    Evaluation3CommitteeMember,
+    Evaluation4Supervisor,
+    Evaluation4CommitteeMember,
+    ChatRoom,
 )
 from app.serializers.serializers import (
     SupervisorStudentModelCommentsSerializer,
@@ -57,7 +62,12 @@ from app.serializers.serializers import (
     SRSEvaluationSupervisorSerializer,
     SRSEvaluationCommitteeMemberSerializer,
     SDDEvaluationSupervisorSerializer,
-    SDDEvaluationCommitteeMemberSerializer
+    SDDEvaluationCommitteeMemberSerializer,
+    Evaluation3SupervisorSerializer,
+    Evaluation3CommitteeMemberSerializer,
+    Evaluation4SupervisorSerializer,
+    Evaluation4CommitteeMemberSerializer,
+    ChatRoomSerializer,
 )
 from .serializers.field_serializers import (
     ChangePasswordDetailSerializer,
@@ -776,7 +786,74 @@ class SDDEvaluationCommitteeMemberView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+
+class Evaluation3SupervisorView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = Evaluation3SupervisorSerializer
+    queryset = Evaluation3Supervisor.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )  
         
+
+class Evaluation3CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = Evaluation3CommitteeMemberSerializer
+    queryset = Evaluation3CommitteeMember.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            CommitteeMember.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except CommitteeMember.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+
+class Evaluation4SupervisorView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = Evaluation4SupervisorSerializer
+    queryset = Evaluation4Supervisor.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            Supervisor.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except Supervisor.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+
+class Evaluation4CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = Evaluation4CommitteeMemberSerializer
+    queryset = Evaluation4CommitteeMember.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            CommitteeMember.objects.get(user=self.request.user)
+            return super().update(request, *args, **kwargs)
+        except CommitteeMember.DoesNotExist:
+            return Response(
+                {"message": "You are not authorized to update this document"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
                 
 class PanelAPIView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
@@ -834,3 +911,57 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
         committee_member = CommitteeMember.objects.get(user=self.request.user)
         serializer.save(uploaded_by=committee_member, template_type=template_type)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+class ChatRoomAPIView(CreateAPIView, ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChatRoomSerializer
+    queryset = ChatRoom.objects.all()
+
+    def get_queryset(self):
+        group_id = self.request.GET.get("group")
+        if group_id:
+            return super().get_queryset().filter(group_id=group_id).order_by("created_at")
+        return super().get_queryset().order_by("created_at")
+
+    def post(self, request):
+        serializer = ChatRoomSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        sent_by = None
+        student = None
+        supervisor = None
+
+        try:
+            group = Group.objects.get(id=serializer.validated_data["group"].id)
+        except Group.DoesNotExist:
+            return Response({"message": "Group not found"}, status=404)
+
+        try:
+            student = Student.objects.get(user=request.user)
+            sent_by = "student"
+        except Student.DoesNotExist:
+            pass
+
+        try:
+            supervisor = Supervisor.objects.get(user=request.user)
+            sent_by = "supervisor"
+        except Supervisor.DoesNotExist:
+            pass
+
+        if not student and not supervisor:
+            return Response({"message": "You are not part of this group."}, status=404)
+
+        message = ChatRoom.objects.create(
+            group=group,
+            student=student,
+            supervisor=supervisor,
+            message=serializer.validated_data["message"],
+            sent_by=sent_by,
+        )
+
+        return Response(
+            ChatRoomSerializer(message).data,
+            status=HTTP_201_CREATED
+        )

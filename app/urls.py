@@ -31,6 +31,11 @@ from .views import (
     SRSEvaluationCommitteeMemberView,
     SDDEvaluationCommitteeMemberView,
     SDDEvaluationSupervisorView,
+    Evaluation3SupervisorView,
+    Evaluation3CommitteeMemberView,
+    Evaluation4CommitteeMemberView,
+    Evaluation4SupervisorView,
+    ChatRoomAPIView
 )
 
 
@@ -136,6 +141,26 @@ urlpatterns = [
         name="sdd-evaluation-supervisor",
     ),
     path(
+        "evaluation3-supervisor/<int:pk>/",
+        Evaluation3SupervisorView.as_view(),
+        name="evaluation3-supervisor",
+    ),
+    path(
+        "evaluation3-committee-member/<int:pk>/",
+        Evaluation3CommitteeMemberView.as_view(),
+        name="evaluation3-committee-member",
+    ),
+    path(
+        "evaluation4-supervisor/<int:pk>/",
+        Evaluation4SupervisorView.as_view(),
+        name="evaluation4-supervisor",
+    ),
+    path(
+        "evaluation4-committee-member/<int:pk>/",
+        Evaluation4CommitteeMemberView.as_view(),
+        name="evaluation4-committee-member",
+    ),
+    path(
         "panel/<int:pk>/",
         PanelAPIView.as_view(),
         name="panel-detail",
@@ -160,4 +185,6 @@ urlpatterns = [
         CommitteeMemberTemplatesAPIView.as_view(),
         name="srs-template",
     ),
+    path('chatroom/<int:pk>/', ChatRoomAPIView.as_view(), name='chatroom-detail'),
+
 ]
