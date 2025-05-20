@@ -4,13 +4,12 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0022_committeemembertemplates_srsevaluation_and_more'),
+        ("app", "0022_committeemembertemplates_srsevaluation_and_more"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='SRSEvaluationSupervisor',
+            name="SRSEvaluationSupervisor",
         ),
     ]

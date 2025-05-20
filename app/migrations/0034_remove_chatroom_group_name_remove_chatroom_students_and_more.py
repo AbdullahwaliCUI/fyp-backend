@@ -5,49 +5,69 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0033_remove_message_receiver_chatroom_students'),
+        ("app", "0033_remove_message_receiver_chatroom_students"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='chatroom',
-            name='group_name',
+            model_name="chatroom",
+            name="group_name",
         ),
         migrations.RemoveField(
-            model_name='chatroom',
-            name='students',
+            model_name="chatroom",
+            name="students",
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='group',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='chat_messages', to='app.group'),
+            model_name="chatroom",
+            name="group",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="chat_messages",
+                to="app.group",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='message',
+            model_name="chatroom",
+            name="message",
             field=models.TextField(default=1),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='sent_by',
-            field=models.CharField(choices=[('student', 'Student'), ('supervisor', 'Supervisor')], default=1, max_length=20),
+            model_name="chatroom",
+            name="sent_by",
+            field=models.CharField(
+                choices=[("student", "Student"), ("supervisor", "Supervisor")],
+                default=1,
+                max_length=20,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='student',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='student_messages', to='app.student'),
+            model_name="chatroom",
+            name="student",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="student_messages",
+                to="app.student",
+            ),
         ),
         migrations.AlterField(
-            model_name='chatroom',
-            name='supervisor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='supervisor_messages', to='app.supervisor'),
+            model_name="chatroom",
+            name="supervisor",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="supervisor_messages",
+                to="app.supervisor",
+            ),
         ),
         migrations.DeleteModel(
-            name='Message',
+            name="Message",
         ),
     ]

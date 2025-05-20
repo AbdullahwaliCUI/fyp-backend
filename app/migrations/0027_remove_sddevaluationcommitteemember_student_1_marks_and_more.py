@@ -4,42 +4,41 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0026_sddevaluationcommitteemember_sddevaluationsupervisor_and_more'),
+        ("app", "0026_sddevaluationcommitteemember_sddevaluationsupervisor_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sddevaluationcommitteemember',
-            name='student_1_marks',
+            model_name="sddevaluationcommitteemember",
+            name="student_1_marks",
         ),
         migrations.RemoveField(
-            model_name='sddevaluationcommitteemember',
-            name='student_2_marks',
+            model_name="sddevaluationcommitteemember",
+            name="student_2_marks",
         ),
         migrations.RemoveField(
-            model_name='sddevaluationsupervisor',
-            name='student_1_marks',
+            model_name="sddevaluationsupervisor",
+            name="student_1_marks",
         ),
         migrations.RemoveField(
-            model_name='sddevaluationsupervisor',
-            name='student_2_marks',
+            model_name="sddevaluationsupervisor",
+            name="student_2_marks",
         ),
         migrations.RemoveField(
-            model_name='srsevaluationcommitteemember',
-            name='student_1_marks',
+            model_name="srsevaluationcommitteemember",
+            name="student_1_marks",
         ),
         migrations.RemoveField(
-            model_name='srsevaluationcommitteemember',
-            name='student_2_marks',
+            model_name="srsevaluationcommitteemember",
+            name="student_2_marks",
         ),
         migrations.RemoveField(
-            model_name='srsevaluationsupervisor',
-            name='student_1_marks',
+            model_name="srsevaluationsupervisor",
+            name="student_1_marks",
         ),
         migrations.RemoveField(
-            model_name='srsevaluationsupervisor',
-            name='student_2_marks',
+            model_name="srsevaluationsupervisor",
+            name="student_2_marks",
         ),
     ]

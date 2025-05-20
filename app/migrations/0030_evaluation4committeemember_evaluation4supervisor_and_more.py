@@ -5,44 +5,201 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0029_evaluation3committeemember_and_more'),
+        ("app", "0029_evaluation3committeemember_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Evaluation4CommitteeMember',
+            name="Evaluation4CommitteeMember",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('module_completion', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('software_testing', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('qa_ability', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('proper_attire', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('is_template_followed', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('is_writeup_correct', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('comment', models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "module_completion",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "software_testing",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "qa_ability",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "proper_attire",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "is_template_followed",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "is_writeup_correct",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                ("comment", models.CharField(blank=True, max_length=255, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Evaluation4Supervisor',
+            name="Evaluation4Supervisor",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('module_completion', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('student_participation_seminar', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('is_template_followed', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('is_writeup_correct', models.CharField(choices=[('pending', 'Pending'), ('marginal', 'Marginal'), ('adequate', 'Adequate'), ('good', 'Good'), ('excellent', 'Excellent')], default='pending', max_length=15)),
-                ('comment', models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "module_completion",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "student_participation_seminar",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "is_template_followed",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "is_writeup_correct",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("marginal", "Marginal"),
+                            ("adequate", "Adequate"),
+                            ("good", "Good"),
+                            ("excellent", "Excellent"),
+                        ],
+                        default="pending",
+                        max_length=15,
+                    ),
+                ),
+                ("comment", models.CharField(blank=True, max_length=255, null=True)),
             ],
         ),
         migrations.AddField(
-            model_name='supervisorofstudentgroup',
-            name='evaluation4_committee_member',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='supervisor_of_students', to='app.evaluation4committeemember'),
+            model_name="supervisorofstudentgroup",
+            name="evaluation4_committee_member",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="supervisor_of_students",
+                to="app.evaluation4committeemember",
+            ),
         ),
         migrations.AddField(
-            model_name='supervisorofstudentgroup',
-            name='evaluation4_supervisor',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='supervisor_of_students', to='app.evaluation4supervisor'),
+            model_name="supervisorofstudentgroup",
+            name="evaluation4_supervisor",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="supervisor_of_students",
+                to="app.evaluation4supervisor",
+            ),
         ),
     ]

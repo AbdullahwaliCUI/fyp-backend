@@ -5,19 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0032_alter_chatroom_unique_together_chatroom_group_name_and_more'),
+        ("app", "0032_alter_chatroom_unique_together_chatroom_group_name_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='message',
-            name='receiver',
+            model_name="message",
+            name="receiver",
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='students',
-            field=models.ManyToManyField(related_name='student_chatrooms', to=settings.AUTH_USER_MODEL),
+            model_name="chatroom",
+            name="students",
+            field=models.ManyToManyField(
+                related_name="student_chatrooms", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

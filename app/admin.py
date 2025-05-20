@@ -23,7 +23,6 @@ from .models import (
     Evaluation4CommitteeMember,
     Evaluation4Supervisor,
     ChatRoom,
-
 )
 
 
@@ -49,4 +48,3 @@ admin.site.register(Evaluation3CommitteeMember)
 admin.site.register(Evaluation4Supervisor)
 admin.site.register(Evaluation4CommitteeMember)
 admin.site.register(ChatRoom)
-

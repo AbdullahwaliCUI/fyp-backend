@@ -35,7 +35,7 @@ from .views import (
     Evaluation3CommitteeMemberView,
     Evaluation4CommitteeMemberView,
     Evaluation4SupervisorView,
-    ChatRoomAPIView
+    ChatRoomAPIView,
 )
 
 
@@ -185,6 +185,5 @@ urlpatterns = [
         CommitteeMemberTemplatesAPIView.as_view(),
         name="srs-template",
     ),
-    path('chatroom/<int:pk>/', ChatRoomAPIView.as_view(), name='chatroom-detail'),
-
+    path("chatroom/<int:pk>/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
 ]

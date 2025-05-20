@@ -769,7 +769,7 @@ class SDDEvaluationSupervisorView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
 
 class SDDEvaluationCommitteeMemberView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -802,8 +802,8 @@ class Evaluation3SupervisorView(RetrieveAPIView, UpdateAPIView):
             return Response(
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
-            )  
-        
+            )
+
 
 class Evaluation3CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -820,7 +820,7 @@ class Evaluation3CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
 
 class Evaluation4SupervisorView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -837,7 +837,7 @@ class Evaluation4SupervisorView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        
+
 
 class Evaluation4CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -854,7 +854,8 @@ class Evaluation4CommitteeMemberView(RetrieveAPIView, UpdateAPIView):
                 {"message": "You are not authorized to update this document"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-                
+
+
 class PanelAPIView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -911,7 +912,8 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
         committee_member = CommitteeMember.objects.get(user=self.request.user)
         serializer.save(uploaded_by=committee_member, template_type=template_type)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
+
 class ChatRoomAPIView(CreateAPIView, ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -921,7 +923,9 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
     def get_queryset(self):
         group_id = self.request.GET.get("group")
         if group_id:
-            return super().get_queryset().filter(group_id=group_id).order_by("created_at")
+            return (
+                super().get_queryset().filter(group_id=group_id).order_by("created_at")
+            )
         return super().get_queryset().order_by("created_at")
 
     def post(self, request):
@@ -962,6 +966,5 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         )
 
         return Response(
-            ChatRoomSerializer(message).data,
-            status=HTTP_201_CREATED
+            ChatRoomSerializer(message).data, status=status.HTTP_201_CREATED
         )

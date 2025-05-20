@@ -16,7 +16,6 @@ from app.models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
-
     CommitteeMemberTemplates,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
@@ -336,7 +335,7 @@ class SRSEvaluationCommitteeMemberSerializer(serializers.ModelSerializer):
             "presentation_attire",
             "comment",
             "total_marks",
-            ]
+        ]
         read_only_fields = ["id"]
 
 

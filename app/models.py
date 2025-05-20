@@ -250,19 +250,45 @@ class SRSEvaluationCommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    analysis_of_existing_systems = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    problem_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    proposed_solution = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    tools_technologies = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    frs_mapped = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    nfrs_mapped = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    requirements_analysis = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    mocks_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    srs_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    technical_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    domain_knowledge = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    presentation_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    analysis_of_existing_systems = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    problem_defined = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    proposed_solution = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    tools_technologies = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    frs_mapped = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    nfrs_mapped = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    requirements_analysis = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    mocks_defined = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    srs_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    technical_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    domain_knowledge = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    qa_ability = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    presentation_attire = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
     comment = models.CharField(max_length=255, null=True, blank=True)
 
     @staticmethod
@@ -282,23 +308,24 @@ class SRSEvaluationCommitteeMember(models.Model):
     @property
     def total_marks(self):
         return (
-            self.calculate(self.analysis_of_existing_systems, 0.5) +
-            self.calculate(self.problem_defined, 2.5) +
-            self.calculate(self.proposed_solution, 1.5) +
-            self.calculate(self.tools_technologies, 0.5) +
-            self.calculate(self.frs_mapped, 4) +
-            self.calculate(self.nfrs_mapped, 2) +
-            self.calculate(self.requirements_analysis, 3) +
-            self.calculate(self.mocks_defined, 2) +
-            self.calculate(self.srs_template_followed, 2) +
-            self.calculate(self.technical_writeup_correct, 3) +
-            self.calculate(self.domain_knowledge, 1) +
-            self.calculate(self.qa_ability, 2) +
-            self.calculate(self.presentation_attire, 1)
+            self.calculate(self.analysis_of_existing_systems, 0.5)
+            + self.calculate(self.problem_defined, 2.5)
+            + self.calculate(self.proposed_solution, 1.5)
+            + self.calculate(self.tools_technologies, 0.5)
+            + self.calculate(self.frs_mapped, 4)
+            + self.calculate(self.nfrs_mapped, 2)
+            + self.calculate(self.requirements_analysis, 3)
+            + self.calculate(self.mocks_defined, 2)
+            + self.calculate(self.srs_template_followed, 2)
+            + self.calculate(self.technical_writeup_correct, 3)
+            + self.calculate(self.domain_knowledge, 1)
+            + self.calculate(self.qa_ability, 2)
+            + self.calculate(self.presentation_attire, 1)
         )
-    
+
     def __str__(self):
         return f"srs_{self.id}"
+
 
 class SDDEvaluationSupervisor(models.Model):
     STATUS_CHOICES = (
@@ -308,15 +335,33 @@ class SDDEvaluationSupervisor(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    data_representation_diagram= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending") 
-    design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
-    algorithms_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    module_completion_status = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_sdd_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_technical_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
-    regularity = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")  
-    seminar_participation = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending") 
+    data_representation_diagram = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    process_flow = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    design_models = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    algorithms_defined = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    module_completion_status = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_sdd_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_technical_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    regularity = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    seminar_participation = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
     comment = models.CharField(max_length=255, null=True, blank=True)
 
     @staticmethod
@@ -336,7 +381,7 @@ class SDDEvaluationSupervisor(models.Model):
     @property
     def total_marks(self) -> float:
         return (
-             self.calculate(self.data_representation_diagram, 2)
+            self.calculate(self.data_representation_diagram, 2)
             + self.calculate(self.process_flow, 2)
             + self.calculate(self.design_models, 4)
             + self.calculate(self.algorithms_defined, 2)
@@ -349,7 +394,7 @@ class SDDEvaluationSupervisor(models.Model):
 
     def __str__(self):
         return f"sdd_{self.id}"
-    
+
 
 class SDDEvaluationCommitteeMember(models.Model):
     STATUS_CHOICES = (
@@ -359,16 +404,36 @@ class SDDEvaluationCommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    data_representation_diagram = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    process_flow = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    sdd_design_models = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    algorithm_defined = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    modules_completion_status = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    sdd_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    techincal_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    project_domain_knowledge = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    data_representation_diagram = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    process_flow = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    sdd_design_models = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    algorithm_defined = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    modules_completion_status = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    sdd_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    techincal_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    project_domain_knowledge = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    qa_ability = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    proper_attire = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
     comment = models.CharField(max_length=255, null=True, blank=True)
 
     @staticmethod
@@ -402,7 +467,7 @@ class SDDEvaluationCommitteeMember(models.Model):
 
     def __str__(self):
         return f"sdd_{self.id}"
-    
+
 
 class Evaluation3Supervisor(models.Model):
     STATUS_CHOICES = (
@@ -412,11 +477,21 @@ class Evaluation3Supervisor(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    regularity = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    module_completion = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    software_testing = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    regularity = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
 
     comment = models.CharField(max_length=255, null=True, blank=True)
 
@@ -445,7 +520,7 @@ class Evaluation3Supervisor(models.Model):
 
     def __str__(self):
         return f"supervisor_eval_{self.id}"
-    
+
 
 class Evaluation3CommitteeMember(models.Model):
     STATUS_CHOICES = (
@@ -455,12 +530,24 @@ class Evaluation3CommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    module_completion = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    software_testing = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    qa_ability = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    proper_attire = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
 
     comment = models.CharField(max_length=255, null=True, blank=True)
 
@@ -490,7 +577,7 @@ class Evaluation3CommitteeMember(models.Model):
 
     def __str__(self):
         return f"committee_member_eval_{self.id}"
-    
+
 
 class Evaluation4Supervisor(models.Model):
     STATUS_CHOICES = (
@@ -500,10 +587,18 @@ class Evaluation4Supervisor(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    student_participation_seminar = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    module_completion = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    student_participation_seminar = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
 
     comment = models.CharField(max_length=255, null=True, blank=True)
 
@@ -531,7 +626,7 @@ class Evaluation4Supervisor(models.Model):
 
     def __str__(self):
         return f"supervisor_eval_{self.id}"
-    
+
 
 class Evaluation4CommitteeMember(models.Model):
     STATUS_CHOICES = (
@@ -541,12 +636,24 @@ class Evaluation4CommitteeMember(models.Model):
         ("good", "Good"),
         ("excellent", "Excellent"),
     )
-    module_completion= models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    software_testing = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    qa_ability = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    proper_attire = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_template_followed = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
-    is_writeup_correct = models.CharField(max_length=15, choices=STATUS_CHOICES, default="pending")
+    module_completion = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    software_testing = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    qa_ability = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    proper_attire = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_template_followed = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
+    is_writeup_correct = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
 
     comment = models.CharField(max_length=255, null=True, blank=True)
 
@@ -576,6 +683,7 @@ class Evaluation4CommitteeMember(models.Model):
 
     def __str__(self):
         return f"committee_member_eval_{self.id}"
+
 
 class SupervisorOfStudentGroup(models.Model):
     STATUS_CHOICES = (
@@ -606,56 +714,56 @@ class SupervisorOfStudentGroup(models.Model):
         blank=True,
         null=True,
     )
-    srs_evaluation_supervisor= models.OneToOneField(
+    srs_evaluation_supervisor = models.OneToOneField(
         SRSEvaluationSupervisor,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    srs_evaluation_committee_member= models.OneToOneField(
+    srs_evaluation_committee_member = models.OneToOneField(
         SRSEvaluationCommitteeMember,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    sdd_evaluation_supervisor= models.OneToOneField(
+    sdd_evaluation_supervisor = models.OneToOneField(
         SDDEvaluationSupervisor,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    sdd_evaluation_committee_member= models.OneToOneField(
+    sdd_evaluation_committee_member = models.OneToOneField(
         SDDEvaluationCommitteeMember,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    evaluation3_supervisor= models.OneToOneField(
+    evaluation3_supervisor = models.OneToOneField(
         Evaluation3Supervisor,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    evaluation3_committee_member= models.OneToOneField(
+    evaluation3_committee_member = models.OneToOneField(
         Evaluation3CommitteeMember,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    evaluation4_supervisor= models.OneToOneField(
+    evaluation4_supervisor = models.OneToOneField(
         Evaluation4Supervisor,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
         blank=True,
         null=True,
     )
-    evaluation4_committee_member= models.OneToOneField(
+    evaluation4_committee_member = models.OneToOneField(
         Evaluation4CommitteeMember,
         on_delete=models.CASCADE,
         related_name="supervisor_of_students",
@@ -671,19 +779,27 @@ class SupervisorOfStudentGroup(models.Model):
         if not self.srs_evaluation_supervisor:
             self.srs_evaluation_supervisor = SRSEvaluationSupervisor.objects.create()
         if not self.srs_evaluation_committee_member:
-            self.srs_evaluation_committee_member = SRSEvaluationCommitteeMember.objects.create()
+            self.srs_evaluation_committee_member = (
+                SRSEvaluationCommitteeMember.objects.create()
+            )
         if not self.sdd_evaluation_supervisor:
             self.sdd_evaluation_supervisor = SDDEvaluationSupervisor.objects.create()
         if not self.sdd_evaluation_committee_member:
-            self.sdd_evaluation_committee_member = SDDEvaluationCommitteeMember.objects.create()
+            self.sdd_evaluation_committee_member = (
+                SDDEvaluationCommitteeMember.objects.create()
+            )
         if not self.evaluation3_supervisor:
             self.evaluation3_supervisor = Evaluation3Supervisor.objects.create()
         if not self.evaluation3_committee_member:
-            self.evaluation3_committee_member = Evaluation3CommitteeMember.objects.create()
+            self.evaluation3_committee_member = (
+                Evaluation3CommitteeMember.objects.create()
+            )
         if not self.evaluation4_supervisor:
             self.evaluation4_supervisor = Evaluation4Supervisor.objects.create()
         if not self.evaluation4_committee_member:
-            self.evaluation4_committee_member = Evaluation4CommitteeMember.objects.create()
+            self.evaluation4_committee_member = (
+                Evaluation4CommitteeMember.objects.create()
+            )
         super().save(*args, **kwargs)
 
     class Meta:
@@ -691,7 +807,6 @@ class SupervisorOfStudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.group} - {self.supervisor} - {self.status}"
-
 
 
 class SupervisorStudentComments(models.Model):
@@ -795,9 +910,23 @@ class ChatRoom(models.Model):
         ("student", "Student"),
         ("supervisor", "Supervisor"),
     )
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="chat_messages")
-    student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, related_name="student_messages")
-    supervisor = models.ForeignKey(Supervisor, on_delete=models.SET_NULL, null=True, blank=True, related_name="supervisor_messages")
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE, related_name="chat_messages"
+    )
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="student_messages",
+    )
+    supervisor = models.ForeignKey(
+        Supervisor,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="supervisor_messages",
+    )
     message = models.TextField()
     sent_by = models.CharField(max_length=20, choices=MESSAGE_BY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -5,29 +5,32 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0031_chatroom_message'),
+        ("app", "0031_chatroom_message"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='chatroom',
+            name="chatroom",
             unique_together=set(),
         ),
         migrations.AddField(
-            model_name='chatroom',
-            name='group_name',
+            model_name="chatroom",
+            name="group_name",
             field=models.CharField(default=1, max_length=100),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='chatroom',
-            name='supervisor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supervisor_chatrooms', to='app.supervisor'),
+            model_name="chatroom",
+            name="supervisor",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="supervisor_chatrooms",
+                to="app.supervisor",
+            ),
         ),
         migrations.RemoveField(
-            model_name='chatroom',
-            name='group',
+            model_name="chatroom",
+            name="group",
         ),
     ]
