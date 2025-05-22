@@ -185,5 +185,5 @@ urlpatterns = [
         CommitteeMemberTemplatesAPIView.as_view(),
         name="srs-template",
     ),
-    path("chatroom/<int:pk>/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
+    path("chatroom/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
 ]

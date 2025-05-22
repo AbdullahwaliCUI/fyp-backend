@@ -489,6 +489,9 @@ class Evaluation3Supervisor(models.Model):
     is_template_followed = models.CharField(
         max_length=15, choices=STATUS_CHOICES, default="pending"
     )
+    project_domain_knowledge = models.CharField(
+        max_length=15, choices=STATUS_CHOICES, default="pending"
+    )
     is_writeup_correct = models.CharField(
         max_length=15, choices=STATUS_CHOICES, default="pending"
     )
@@ -515,6 +518,7 @@ class Evaluation3Supervisor(models.Model):
             + self.calculate(self.software_testing, 4)
             + self.calculate(self.regularity, 3)
             + self.calculate(self.is_template_followed, 2)
+            + self.calculate(self.project_domain_knowledge, 2.5)
             + self.calculate(self.is_writeup_correct, 3)
         )
 

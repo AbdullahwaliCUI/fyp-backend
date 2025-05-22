@@ -301,6 +301,7 @@ class NewIdeaProjectAPIVIEW(CreateAPIView):
         try:
             student = Student.objects.get(user=request.user)
             serializer = NewIdeaProjectSerializer(
+                data = 
                 {**request.data, "student": student.id}
             )
             if serializer.is_valid():
@@ -922,11 +923,14 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
 
     def get_queryset(self):
         group_id = self.request.GET.get("group")
+        last_id = self.request.GET.get("last_id")
+        queryset = super().get_queryset().order_by("created_at")
         if group_id:
-            return (
-                super().get_queryset().filter(group_id=group_id).order_by("created_at")
-            )
-        return super().get_queryset().order_by("created_at")
+            queryset= queryset.filter(group_id=group_id)
+        if last_id:
+            queryset= queryset.filter(id__gt=last_id)
+        return queryset
+    
 
     def post(self, request):
         serializer = ChatRoomSerializer(data=request.data)
