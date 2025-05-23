@@ -300,12 +300,9 @@ class NewIdeaProjectAPIVIEW(CreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
             student = Student.objects.get(user=request.user)
-            serializer = NewIdeaProjectSerializer(
-                data = 
-                {**request.data, "student": student.id}
-            )
+            serializer = NewIdeaProjectSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save(student=student)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -926,11 +923,10 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         last_id = self.request.GET.get("last_id")
         queryset = super().get_queryset().order_by("created_at")
         if group_id:
-            queryset= queryset.filter(group_id=group_id)
+            queryset = queryset.filter(group_id=group_id)
         if last_id:
-            queryset= queryset.filter(id__gt=last_id)
+            queryset = queryset.filter(id__gt=last_id)
         return queryset
-    
 
     def post(self, request):
         serializer = ChatRoomSerializer(data=request.data)
