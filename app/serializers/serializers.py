@@ -73,7 +73,8 @@ class SupervisorProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = ["id", "user", "supervisor_id"]
+        fields = ["id", "user", "supervisor_id","research_interest","academic_background"]
+        read_only_fields = ["id","user", "supervisor_id"]
 
 
 class CommitteeMemberProfileSerializer(serializers.ModelSerializer):

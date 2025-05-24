@@ -58,6 +58,11 @@ class Supervisor(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="supervisor_profile"
     )
     supervisor_id = models.CharField(max_length=100, unique=True)
+    research_interest = models.CharField(max_length=255, blank=True, null=True)
+    academic_background = models.CharField(
+        max_length=255, blank=True, null=True
+    )
+    
     category = models.ManyToManyField(
         ProjectCategories, related_name="supervisor", blank=True
     )
@@ -863,6 +868,7 @@ class Document(models.Model):
         ("scope_document", "Scope Document"),
         ("srs_document", "SRS Document"),
         ("sdd_document", "SDD Document"),
+        ("final_report_document", "Final Report Document")
     )
     STATUS_CHOICES = (
         ("pending", "Pending"),
@@ -877,7 +883,7 @@ class Document(models.Model):
     uploaded_by = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="uploaded_documents"
     )
-    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPE_CHOICES)
+    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPE_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     title = models.CharField(max_length=100)
@@ -889,6 +895,7 @@ class CommitteeMemberTemplates(models.Model):
     TEMPLATE_TYPE_CHOICES = (
         ("srs_template", "SRS Template"),
         ("sdd_template", "SDD Template"),
+        ("final_report_template", "Final Report Template"),
     )
     SEMESTER_CHOICES = (
         ("semester_6", "Semester 6"),
@@ -896,7 +903,7 @@ class CommitteeMemberTemplates(models.Model):
         ("semester_8", "Semester 8"),
     )
     semester = models.CharField(max_length=100, choices=SEMESTER_CHOICES)
-    template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPE_CHOICES)
+    template_type = models.CharField(max_length=50, choices=TEMPLATE_TYPE_CHOICES)
     uploaded_by = models.ForeignKey(
         CommitteeMember,
         on_delete=models.CASCADE,

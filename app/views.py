@@ -593,7 +593,7 @@ class SupervisorLoginAPIView(APIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class SupervisorProfileView(RetrieveAPIView):
+class SupervisorProfileView(RetrieveAPIView, UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SupervisorProfileSerializer
@@ -601,7 +601,7 @@ class SupervisorProfileView(RetrieveAPIView):
 
     def get_object(self):
         return self.get_queryset().get(user=self.request.user)
-
+    
 
 class CommitteeMemberLoginAPIView(APIView):
     def post(self, request):
