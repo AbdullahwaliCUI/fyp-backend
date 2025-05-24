@@ -203,6 +203,14 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 }
             )
             if serializer.is_valid():
+                student_2=serializer.validated_data.get("student_2")
+                request_status=student_2.receive_request.filter(status="accepted").exists()
+                receive_request=student_2.receive_request.filter(status="accepted").exists()
+                if request_status or receive_request:
+                    return Response(
+                        {"message": "You are too late to send group mate request"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
