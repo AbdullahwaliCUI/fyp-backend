@@ -232,6 +232,23 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 serializer = GroupStatusSerializer(
                     instance=group, data=request.data, partial=True
                 )
+                request_status=request.data.get("status")
+                if request_status == "accepted":
+                    student_1_receive_status= group.student_1.receive_request.filter(status="accepted").exists()
+                    student_1_send_status= group.student_1.send_request.filter(status="accepted").exists()
+                    if student_1_receive_status or student_1_send_status:
+                        return Response(
+                            {"message": "You are too late to accept group mate request"},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                    student_2_receive_status= group.student_2.receive_request.filter(status="accepted").exists()
+                    student_2_send_status= group.student_2.send_request.filter(status="accepted").exists()
+                    if student_2_receive_status or student_2_send_status:
+                        return Response(
+                            {"message": "someone already choose you as group mate"},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                    
             if serializer.is_valid():
                 serializer.save()
                 if serializer.data.get("status"):
