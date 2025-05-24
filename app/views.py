@@ -268,6 +268,13 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 {"message": "Group mate request not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+            
+class GetGroupRequestView(RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = GroupRequestSerializer
+    queryset = Group.objects.all()
+    
 
 
 class GroupDetailView(RetrieveAPIView):

@@ -36,6 +36,7 @@ from .views import (
     Evaluation4CommitteeMemberView,
     Evaluation4SupervisorView,
     ChatRoomAPIView,
+    GetGroupRequestView,
 )
 
 
@@ -68,6 +69,7 @@ urlpatterns = [
         name="project-categories",
     ),
     path("groupmate/request/", GroupRequestView.as_view(), name="groupmate-request"),
+    path("groupmate/request/<int:pk>/", GetGroupRequestView.as_view(), name="groupmate-request"),
     path("group/<int:pk>/", GroupDetailView.as_view(), name="group-detail"),
     path(
         "groupmate/<int:group>/comments/",
