@@ -150,7 +150,11 @@ class StudentsListView(ListAPIView):
     pagination_class = BasePagination
 
     def get_queryset(self):
+        for_request=self.request.GET.get("for_request")
+        breakpoint()
         student = Student.objects.get(user=self.request.user)
+        request_status=list[student.send_request.all().values_list("status",flat=True)]
+
         queryset = (
             super()
             .get_queryset()
@@ -160,6 +164,13 @@ class StudentsListView(ListAPIView):
                 semester=student.semester,
             )
         )
+        if for_request == "true":
+            queryset = queryset.exclude(
+                id__in=student.send_request.filter(status="accepted").values_list("student_2", flat=True)
+            )
+            queryset = queryset.exclude(
+                id__in=student.receive_request.filter(status="accepted").values_list("student_1", flat=True)
+            )
         return queryset
 
 
