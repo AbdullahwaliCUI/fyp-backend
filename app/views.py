@@ -151,10 +151,7 @@ class StudentsListView(ListAPIView):
 
     def get_queryset(self):
         for_request=self.request.GET.get("for_request")
-        breakpoint()
         student = Student.objects.get(user=self.request.user)
-        request_status=list[student.send_request.all().values_list("status",flat=True)]
-
         queryset = (
             super()
             .get_queryset()
