@@ -447,9 +447,6 @@ class Evaluation4CommitteeMemberSerializer(serializers.ModelSerializer):
 
 
 class ChatRoomSerializer(serializers.ModelSerializer):
-    student = StudentProfileSerializer(read_only=True)
-    supervisor = SupervisorProfileSerializer(read_only=True)
-
     class Meta:
         model = ChatRoom
         fields = [

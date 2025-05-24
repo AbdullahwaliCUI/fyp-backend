@@ -940,7 +940,7 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         try:
             group = Group.objects.get(id=serializer.validated_data["group"].id)
         except Group.DoesNotExist:
-            return Response({"message": "Group not found"}, status=404)
+            return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             student = Student.objects.get(user=request.user)
@@ -955,7 +955,7 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
             pass
 
         if not student and not supervisor:
-            return Response({"message": "You are not part of this group."}, status=404)
+            return Response({"message": "You are not part of this group."}, status=status.HTTP_403_FORBIDDEN)
 
         message = ChatRoom.objects.create(
             group=group,
@@ -966,5 +966,6 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         )
 
         return Response(
-            ChatRoomSerializer(message).data, status=status.HTTP_201_CREATED
+            ChatRoomSerializer(message).data,
+            status=status.HTTP_201_CREATED
         )
