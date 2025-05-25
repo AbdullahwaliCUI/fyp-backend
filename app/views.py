@@ -670,7 +670,7 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
 
     def create(self, request, *args, **kwargs):
         document_type = self.kwargs.get("document_type")
-        if document_type not in ["scope_document", "srs_document", "sdd_document"]:
+        if document_type not in ["scope_document", "srs_document", "sdd_document","final_report_document","presentation_document"]:
             return Response(
                 {"message": "Invalid document type"}, status=status.HTTP_400_BAD_REQUEST
             )
