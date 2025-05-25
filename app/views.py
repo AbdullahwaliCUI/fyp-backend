@@ -337,16 +337,21 @@ class GroupComments(APIView):
             return Response({"message": "No comments found"}, status=404)
 
 
-class ProjectAPIVIEW(ListAPIView):
+class ProjectAPIVIEW(ListAPIView, CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
 
     def get_queryset(self):
+        queryset = super().get_queryset()
         category_id = self.request.GET.get("category_id")
         if category_id:
-            return Project.objects.filter(project_category_id=category_id)
-        return Project.objects.all()
+            queryset = queryset.filter(project_category_id=category_id)
+        queryset = queryset.filter(
+            Q(panel__isnull=False) | Q(panel__isnull=True, user=self.request.user)
+        )
+        return queryset
 
 
 class ListSuperisorAPIView(ListAPIView):
@@ -402,7 +407,16 @@ class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
         return super().get_queryset()
 
     def post(self, request, *args, **kwargs):
-        serializer = SupervisorofStudentGroupSerializer(data=request.data)
+        data = request.data
+        project_data = data.get("project")
+        if type(project_data) is dict:
+            project_serializer = ProjectSerializer(data=project_data)
+            if not project_serializer.is_valid():
+                return Response(project_serializer.errors, status=HTTP_400_BAD_REQUEST)
+            project_serializer.save()
+            project_data = project_serializer.data.get("id")
+            data.update({"project": project_data})
+        serializer = SupervisorofStudentGroupSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
         try:
@@ -431,6 +445,7 @@ class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
             return Response({"message": "Supervisor not found"}, status=404)
 
     def update(self, request, *args, **kwargs):
+        response_student = None
         try:
             id = self.request.GET.get("pk")
             try:

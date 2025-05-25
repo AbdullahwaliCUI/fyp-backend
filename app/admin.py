@@ -32,9 +32,7 @@ admin.site.register(CommitteeMember)
 admin.site.register(ProjectCategories)
 admin.site.register(Group)
 admin.site.register(GroupCreationComment)
-admin.site.register(Project)
 admin.site.register(SupervisorStudentComments)
-admin.site.register(SupervisorOfStudentGroup)
 admin.site.register(CommitteeMemberPanel)
 admin.site.register(ScopeDocumentEvaluationCriteria)
 admin.site.register(SRSEvaluationSupervisor)
@@ -46,3 +44,17 @@ admin.site.register(Evaluation3CommitteeMember)
 admin.site.register(Evaluation4Supervisor)
 admin.site.register(Evaluation4CommitteeMember)
 admin.site.register(ChatRoom)
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ["project_name", "project_category", "panel", "user"]
+
+    list_filter = ["project_category__category_name", "panel"]
+
+
+@admin.register(SupervisorOfStudentGroup)
+class SupervisorOfStudentGroupAdmin(admin.ModelAdmin):
+    list_display = ["supervisor", "group", "status", "project"]
+
+    list_filter = ["status", "project__panel"]

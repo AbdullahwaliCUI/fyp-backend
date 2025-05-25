@@ -200,6 +200,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             "groups_data",
         ]
 
+        read_only_fields = ["id", "groups_data"]
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        validated_data.update({"user": request.user})
+        response = super().create(validated_data=validated_data)
+        Project.objects.filter(user=request.user).exclude(pk=response.pk).delete()
+        return response
+
 
 class ScopeDocumentEvaluationCriteriaSerializer(serializers.ModelSerializer):
     class Meta:
