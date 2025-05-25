@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-# Student Model
-
 
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -864,6 +862,7 @@ class Document(models.Model):
         ("srs_document", "SRS Document"),
         ("sdd_document", "SDD Document"),
         ("final_report_document", "Final Report Document"),
+        ("presentation_document", "Presentation Document"),
     )
     STATUS_CHOICES = (
         ("pending", "Pending"),

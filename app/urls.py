@@ -35,6 +35,8 @@ from .views import (
     Evaluation4SupervisorView,
     ChatRoomAPIView,
     GetGroupRequestView,
+    ExportReportAPIView,
+
 )
 
 
@@ -180,4 +182,6 @@ urlpatterns = [
         name="srs-template",
     ),
     path("chatroom/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
+    path("export/report/", ExportReportAPIView.as_view(), name="export-report"),
+
 ]

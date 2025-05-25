@@ -1017,3 +1017,70 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         return Response(
             ChatRoomSerializer(message).data, status=status.HTTP_201_CREATED
         )
+
+
+class ExportReportAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        supervisor = Supervisor.objects.filter(user=request.user).first()
+        if not supervisor:
+            return Response(
+                {"message": "You are not authorized to export reports."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        supervisor_groups = supervisor.group_request.filter(status="accepted")
+        status_list = []
+        for group in supervisor_groups:
+            status_list.append(
+                {
+                    "group_id": group.id,
+                    "student_1": {
+                        "name": group.group.student_1.user.username,
+                        "email": group.group.student_1.user.email,
+                        "registration_no": group.group.student_1.registration_no,
+                    },
+                    "student_2": {
+                        "name": group.group.student_2.user.username,
+                        "email": group.group.student_2.user.email,
+                        "registration_no": group.group.student_2.registration_no,
+                    },
+                    "project_title": group.project.project_name
+                    if group.project
+                    else "N/A",
+                    "doc_links": {
+                        "scope_document": ",".join(
+                            group.documents.filter(
+                                document_type="scope_document", status="accepted"
+                            ).values_list("uploaded_file", flat=True)
+                        ),
+                        "srs_document": ",".join(
+                            group.documents.filter(
+                                document_type="srs_document", status="accepted"
+                            ).values_list("uploaded_file", flat=True)
+                        ),
+                        "sdd_document": ",".join(
+                            group.documents.filter(
+                                document_type="sdd_document", status="accepted"
+                            ).values_list("uploaded_file", flat=True)
+                        ),
+                        "final_report_document": ",".join(
+                            group.documents.filter(
+                                document_type="final_report_document", status="accepted"
+                            ).values_list("uploaded_file", flat=True)
+                        ),
+                        "presentation_document": ",".join(
+                            group.documents.filter(
+                                document_type="presentation_document", status="accepted"
+                            ).values_list("uploaded_file", flat=True)
+                        ),
+                    },
+                    "status": group.status,
+                }
+            )
+        return Response(
+            {"message": "Reports exported successfully", "status_list": status_list},
+            status=status.HTTP_200_OK,
+        )
+

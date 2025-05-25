@@ -51,6 +51,19 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ["project_name", "project_category", "panel", "user"]
 
     list_filter = ["project_category__category_name", "panel"]
+    readonly_fields = ("user",)  
+
+    fieldsets = (
+        ("Project Information", {
+            "fields": ("project_name", "project_description", "project_category")
+        }),
+        ("Technical Details", {
+            "fields": ("language", "functionalities")
+        }),
+        ("Assignment", {
+            "fields": ("panel", "user")
+        }),
+    )
 
 
 @admin.register(SupervisorOfStudentGroup)
