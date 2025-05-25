@@ -300,6 +300,7 @@ class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
             "uploaded_file",
             "uploaded_at",
             "semester",
+            "template_type",
         ]
 
 
