@@ -10,7 +10,6 @@ from app.models import (
     GroupCreationComment,
     ProjectCategories,
     Project,
-    NewIdeaProject,
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
     Document,
@@ -38,7 +37,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class StudentProfileSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
     group_id = serializers.SerializerMethodField(read_only=True)
-    groupmate_id=serializers.SerializerMethodField(read_only=True)
+    groupmate_id = serializers.SerializerMethodField(read_only=True)
 
     def get_group_id(self, obj):
         group = SupervisorOfStudentGroup.objects.filter(
@@ -46,7 +45,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             status="accepted",
         ).first()
         return group.id if group else None
-    
+
     def get_groupmate_id(self, obj):
         group = Group.objects.filter(
             Q(student_1=obj) | Q(student_2=obj),
@@ -73,8 +72,14 @@ class SupervisorProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervisor
-        fields = ["id", "user", "supervisor_id","research_interest","academic_background"]
-        read_only_fields = ["id","user", "supervisor_id"]
+        fields = [
+            "id",
+            "user",
+            "supervisor_id",
+            "research_interest",
+            "academic_background",
+        ]
+        read_only_fields = ["id", "user", "supervisor_id"]
 
 
 class CommitteeMemberProfileSerializer(serializers.ModelSerializer):
@@ -194,23 +199,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             "functionalities",
             "groups_data",
         ]
-
-
-class NewIdeaProjectSerializer(serializers.ModelSerializer):
-    student = StudentProfileSerializer(read_only=True)
-
-    class Meta:
-        model = NewIdeaProject
-        fields = [
-            "id",
-            "student",
-            "title",
-            "description",
-            "proposal_link",
-            "proposal_file",
-            "created_at",
-        ]
-        read_only_fields = ["id", "created_at"]
 
 
 class ScopeDocumentEvaluationCriteriaSerializer(serializers.ModelSerializer):

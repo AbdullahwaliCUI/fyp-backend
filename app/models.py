@@ -59,10 +59,8 @@ class Supervisor(models.Model):
     )
     supervisor_id = models.CharField(max_length=100, unique=True)
     research_interest = models.CharField(max_length=255, blank=True, null=True)
-    academic_background = models.CharField(
-        max_length=255, blank=True, null=True
-    )
-    
+    academic_background = models.CharField(max_length=255, blank=True, null=True)
+
     category = models.ManyToManyField(
         ProjectCategories, related_name="supervisor", blank=True
     )
@@ -129,20 +127,6 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.project_name} - {self.project_category}"
-
-
-class NewIdeaProject(models.Model):
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name="new_idea"
-    )
-    title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    proposal_link = models.URLField(blank=True, null=True)
-    proposal_file = models.FileField(upload_to="proposals/", blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.title} - {self.student}"
 
 
 class ScopeDocumentEvaluationCriteria(models.Model):
@@ -868,7 +852,7 @@ class Document(models.Model):
         ("scope_document", "Scope Document"),
         ("srs_document", "SRS Document"),
         ("sdd_document", "SDD Document"),
-        ("final_report_document", "Final Report Document")
+        ("final_report_document", "Final Report Document"),
     )
     STATUS_CHOICES = (
         ("pending", "Pending"),

@@ -9,7 +9,6 @@ from .models import (
     Group,
     GroupCreationComment,
     Project,
-    NewIdeaProject,
     SupervisorStudentComments,
     SupervisorOfStudentGroup,
     CommitteeMemberPanel,
@@ -34,7 +33,6 @@ admin.site.register(ProjectCategories)
 admin.site.register(Group)
 admin.site.register(GroupCreationComment)
 admin.site.register(Project)
-admin.site.register(NewIdeaProject)
 admin.site.register(SupervisorStudentComments)
 admin.site.register(SupervisorOfStudentGroup)
 admin.site.register(CommitteeMemberPanel)

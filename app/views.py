@@ -25,7 +25,6 @@ from .models import (
     ProjectCategories,
     Group,
     Project,
-    NewIdeaProject,
     SupervisorOfStudentGroup,
     Document,
     ScopeDocumentEvaluationCriteria,
@@ -49,7 +48,6 @@ from app.serializers.serializers import (
     StudentProfileSerializer,
     GroupStatusSerializer,
     ProjectSerializer,
-    NewIdeaProjectSerializer,
     SupervisorOfStudentGroupSerializer,
     SupervisorProfileSerializer,
     CommitteeMemberProfileSerializer,
@@ -150,7 +148,7 @@ class StudentsListView(ListAPIView):
     pagination_class = BasePagination
 
     def get_queryset(self):
-        for_request=self.request.GET.get("for_request")
+        for_request = self.request.GET.get("for_request")
         student = Student.objects.get(user=self.request.user)
         queryset = (
             super()
@@ -163,10 +161,14 @@ class StudentsListView(ListAPIView):
         )
         if for_request == "true":
             queryset = queryset.exclude(
-                id__in=student.send_request.filter(status="accepted").values_list("student_2", flat=True)
+                id__in=student.send_request.filter(status="accepted").values_list(
+                    "student_2", flat=True
+                )
             )
             queryset = queryset.exclude(
-                id__in=student.receive_request.filter(status="accepted").values_list("student_1", flat=True)
+                id__in=student.receive_request.filter(status="accepted").values_list(
+                    "student_1", flat=True
+                )
             )
         return queryset
 
@@ -203,9 +205,13 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 }
             )
             if serializer.is_valid():
-                student_2=serializer.validated_data.get("student_2")
-                request_status=student_2.receive_request.filter(status="accepted").exists()
-                receive_request=student_2.receive_request.filter(status="accepted").exists()
+                student_2 = serializer.validated_data.get("student_2")
+                request_status = student_2.receive_request.filter(
+                    status="accepted"
+                ).exists()
+                receive_request = student_2.receive_request.filter(
+                    status="accepted"
+                ).exists()
                 if request_status or receive_request:
                     return Response(
                         {"message": "You are too late to send group mate request"},
@@ -232,23 +238,33 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 serializer = GroupStatusSerializer(
                     instance=group, data=request.data, partial=True
                 )
-                request_status=request.data.get("status")
+                request_status = request.data.get("status")
                 if request_status == "accepted":
-                    student_1_receive_status= group.student_1.receive_request.filter(status="accepted").exists()
-                    student_1_send_status= group.student_1.send_request.filter(status="accepted").exists()
+                    student_1_receive_status = group.student_1.receive_request.filter(
+                        status="accepted"
+                    ).exists()
+                    student_1_send_status = group.student_1.send_request.filter(
+                        status="accepted"
+                    ).exists()
                     if student_1_receive_status or student_1_send_status:
                         return Response(
-                            {"message": "You are too late to accept group mate request"},
+                            {
+                                "message": "You are too late to accept group mate request"
+                            },
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-                    student_2_receive_status= group.student_2.receive_request.filter(status="accepted").exists()
-                    student_2_send_status= group.student_2.send_request.filter(status="accepted").exists()
+                    student_2_receive_status = group.student_2.receive_request.filter(
+                        status="accepted"
+                    ).exists()
+                    student_2_send_status = group.student_2.send_request.filter(
+                        status="accepted"
+                    ).exists()
                     if student_2_receive_status or student_2_send_status:
                         return Response(
                             {"message": "someone already choose you as group mate"},
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-                    
+
             if serializer.is_valid():
                 serializer.save()
                 if serializer.data.get("status"):
@@ -268,13 +284,13 @@ class GroupRequestView(CreateAPIView, UpdateAPIView, ListAPIView):
                 {"message": "Group mate request not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-            
+
+
 class GetGroupRequestView(RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = GroupRequestSerializer
     queryset = Group.objects.all()
-    
 
 
 class GroupDetailView(RetrieveAPIView):
@@ -333,35 +349,6 @@ class ProjectAPIVIEW(ListAPIView):
         return Project.objects.all()
 
 
-class NewIdeaProjectAPIVIEW(CreateAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        try:
-            student = Student.objects.get(user=request.user)
-            serializer = NewIdeaProjectSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save(student=student)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Student.DoesNotExist:
-            return Response(
-                {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
-            )
-
-
-class StudentProposalListAPIView(ListAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = NewIdeaProject
-
-    def get_queryset(self):
-        student = Student.objects.get(user=self.request.user)
-        return NewIdeaProject.objects.filter(student=student)
-
-
 class ListSuperisorAPIView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -414,7 +401,7 @@ class SendSupervisorRequestAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
             pass
         return super().get_queryset()
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = SupervisorofStudentGroupSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -521,7 +508,7 @@ class SupervisorStudentCommentsAPIView(CreateAPIView, ListAPIView):
             return super().get_queryset().filter(group=group_id)
         return super().get_queryset()
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = SupervisorStudentCommentsSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -608,7 +595,7 @@ class SupervisorProfileView(RetrieveAPIView, UpdateAPIView):
 
     def get_object(self):
         return self.get_queryset().get(user=self.request.user)
-    
+
 
 class CommitteeMemberLoginAPIView(APIView):
     def post(self, request):
@@ -968,7 +955,7 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
             queryset = queryset.filter(id__gt=last_id)
         return queryset
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = ChatRoomSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -978,9 +965,13 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         supervisor = None
 
         try:
-            group = SupervisorOfStudentGroup.objects.get(id=serializer.validated_data["group"].id)
+            group = SupervisorOfStudentGroup.objects.get(
+                id=serializer.validated_data["group"].id
+            )
         except SupervisorOfStudentGroup.DoesNotExist:
-            return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         try:
             student = Student.objects.get(user=request.user)
@@ -995,7 +986,10 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
             pass
 
         if not student and not supervisor:
-            return Response({"message": "You are not part of this group."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"message": "You are not part of this group."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         message = ChatRoom.objects.create(
             group=group,
@@ -1006,6 +1000,5 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         )
 
         return Response(
-            ChatRoomSerializer(message).data,
-            status=status.HTTP_201_CREATED
+            ChatRoomSerializer(message).data, status=status.HTTP_201_CREATED
         )

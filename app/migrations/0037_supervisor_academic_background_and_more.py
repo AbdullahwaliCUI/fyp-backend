@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0036_alter_committeemembertemplates_template_type_and_more'),
+        ("app", "0036_alter_committeemembertemplates_template_type_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='supervisor',
-            name='academic_background',
+            model_name="supervisor",
+            name="academic_background",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='supervisor',
-            name='research_interest',
+            model_name="supervisor",
+            name="research_interest",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

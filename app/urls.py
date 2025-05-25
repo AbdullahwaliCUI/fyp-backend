@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-    NewIdeaProjectAPIVIEW,
     GroupRequestView,
     StudentLoginView,
     StudentsListView,
@@ -8,7 +7,6 @@ from .views import (
     ChangePasswordView,
     ProjectCategoriesView,
     ProjectAPIVIEW,
-    StudentProposalListAPIView,
     SupervisorStudentCommentsAPIView,
     SendSupervisorRequestAPIView,
     SupervisorResponseAPIView,
@@ -69,7 +67,11 @@ urlpatterns = [
         name="project-categories",
     ),
     path("groupmate/request/", GroupRequestView.as_view(), name="groupmate-request"),
-    path("groupmate/request/<int:pk>/", GetGroupRequestView.as_view(), name="groupmate-request"),
+    path(
+        "groupmate/request/<int:pk>/",
+        GetGroupRequestView.as_view(),
+        name="groupmate-request",
+    ),
     path("group/<int:pk>/", GroupDetailView.as_view(), name="group-detail"),
     path(
         "groupmate/<int:group>/comments/",
@@ -77,16 +79,6 @@ urlpatterns = [
         name="groupmate-comments",
     ),
     path("projects/list/", ProjectAPIVIEW.as_view(), name="projects-list"),
-    path(
-        "projects/new_idea/",
-        NewIdeaProjectAPIVIEW.as_view(),
-        name="projects-new-idea",
-    ),
-    path(
-        "student/proposal/list/",
-        StudentProposalListAPIView.as_view(),
-        name="student-proposal-list",
-    ),
     path(
         "supervisor/list/",
         ListSuperisorAPIView.as_view(),
