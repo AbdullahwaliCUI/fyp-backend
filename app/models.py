@@ -922,7 +922,7 @@ class ChatRoom(models.Model):
         ("supervisor", "Supervisor"),
     )
     group = models.ForeignKey(
-        Group, on_delete=models.CASCADE, related_name="chat_messages"
+        SupervisorOfStudentGroup, on_delete=models.CASCADE, related_name="chat_messages"
     )
     student = models.ForeignKey(
         Student,

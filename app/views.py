@@ -978,8 +978,8 @@ class ChatRoomAPIView(CreateAPIView, ListAPIView):
         supervisor = None
 
         try:
-            group = Group.objects.get(id=serializer.validated_data["group"].id)
-        except Group.DoesNotExist:
+            group = SupervisorOfStudentGroup.objects.get(id=serializer.validated_data["group"].id)
+        except SupervisorOfStudentGroup.DoesNotExist:
             return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
         try:
