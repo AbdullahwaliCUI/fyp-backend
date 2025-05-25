@@ -943,7 +943,7 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
 
     def create(self, request, *args, **kwargs):
         template_type = self.kwargs.get("template_type")
-        if template_type not in ["srs_template", "sdd_template"]:
+        if template_type not in ["srs_template", "sdd_template","final_report_template"]:
             return Response(
                 {"message": "Invalid template type"}, status=status.HTTP_400_BAD_REQUEST
             )
