@@ -11,7 +11,7 @@ def api_client():
 
 @pytest.fixture
 def project_category():
-    return ProjectCategories.objects.create(name="Test Category")
+    return ProjectCategories.objects.create(category_name="Test Category")
 
 
 @pytest.fixture

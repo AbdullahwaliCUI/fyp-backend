@@ -12,6 +12,8 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 
+from django.shortcuts import get_object_or_404
+
 from django.db.models import Q
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -137,7 +139,7 @@ class StudentProfileView(RetrieveAPIView):
     queryset = Student.objects.all()
 
     def get_object(self):
-        return self.get_queryset().get(user=self.request.user)
+        return get_object_or_404(self.get_queryset(), user=self.request.user)
 
 
 class StudentsListView(ListAPIView):
@@ -609,7 +611,7 @@ class SupervisorProfileView(RetrieveAPIView, UpdateAPIView):
     queryset = Supervisor.objects.all()
 
     def get_object(self):
-        return self.get_queryset().get(user=self.request.user)
+        return get_object_or_404(self.get_queryset(), user=self.request.user)
 
 
 class CommitteeMemberLoginAPIView(APIView):
@@ -636,7 +638,7 @@ class CommitteeMemberProfileView(RetrieveAPIView):
     queryset = CommitteeMember.objects.all()
 
     def get_object(self):
-        return self.get_queryset().get(user=self.request.user)
+        return get_object_or_404(self.get_queryset(), user=self.request.user)
 
 
 class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
