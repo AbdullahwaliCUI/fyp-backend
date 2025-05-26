@@ -4,15 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0042_alter_committeemembertemplates_uploaded_file'),
+        ("app", "0042_alter_committeemembertemplates_uploaded_file"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='committeemembertemplates',
-            name='template_type',
-            field=models.CharField(choices=[('scope_documents_template', 'Scope Document Template'), ('srs_template', 'SRS Template'), ('sdd_template', 'SDD Template'), ('final_report_template', 'Final Report Template')], max_length=50),
+            model_name="committeemembertemplates",
+            name="template_type",
+            field=models.CharField(
+                choices=[
+                    ("scope_documents_template", "Scope Document Template"),
+                    ("srs_template", "SRS Template"),
+                    ("sdd_template", "SDD Template"),
+                    ("final_report_template", "Final Report Template"),
+                ],
+                max_length=50,
+            ),
         ),
     ]

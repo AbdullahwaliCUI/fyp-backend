@@ -132,30 +132,40 @@ class StudentAdmin(ImportableExportableAdmin):
                         student.save()
                         records_updated += 1
                     except Student.DoesNotExist:
-                        Student.objects.create(
-                            registration_no=record_field_values.get(
-                                "registration_no", ""
-                            ),
-                            department=record_field_values.get("department", ""),
-                            semester=record_field_values.get("semester", "").lower(),
-                            batch_no=record_field_values.get("batch_no", ""),
-                            user=CustomUser.objects.create(
-                                username=record_field_values.get("username", ""),
-                                email=record_field_values.get("email", ""),
-                                user_type="student",
-                            ),
-                        )
-                        records_created += 1
+                        username = record_field_values.get("username", "")
+                        if not username:
+                            errors[f"username required, skipping record: {row_idx}"] = [
+                                row_idx
+                            ]
+                            continue
+                        try:
+                            CustomUser.objects.get(username=username)
+                            errors[
+                                f"username ({username}) already taken, skipping record: {row_idx}"
+                            ] = [row_idx]
+                        except CustomUser.DoesNotExist:
+                            Student.objects.create(
+                                registration_no=record_field_values.get(
+                                    "registration_no", ""
+                                ),
+                                department=record_field_values.get("department", ""),
+                                semester=record_field_values.get(
+                                    "semester", ""
+                                ).lower(),
+                                batch_no=record_field_values.get("batch_no", ""),
+                                user=CustomUser.objects.create(
+                                    username=record_field_values.get("username", ""),
+                                    email=record_field_values.get("email", ""),
+                                    user_type="student",
+                                ),
+                            )
+                            records_created += 1
 
                 except Exception as e:
-                    errors[row_idx] = [
-                        f"Error creating user/student: {str(e)}",
-                    ]
+                    errors[f"Error creating user/student: {str(e)}"] = [row_idx]
 
             except Exception as e:
-                errors[row_idx] = [
-                    f"Error processing row data: {str(e)}",
-                ]
+                errors[f"Error processing row data: {str(e)}"] = [row_idx]
 
             except (ValueError, Exception) as ex:
                 msg = str(ex)
