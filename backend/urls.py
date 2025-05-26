@@ -28,7 +28,7 @@ urlpatterns = [
         name="document-download",
     ),
     path(
-        "templates/<str:filename>/",
+        "doc_templates/<str:filename>/",
         SRSTemplateDownloadView.as_view(),
         name="template-download",
     ),

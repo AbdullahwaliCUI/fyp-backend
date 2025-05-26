@@ -2,15 +2,17 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 from app.models import Student, Group, ProjectCategories, CustomUser
-from app.views import StudentsListView
+
 
 @pytest.fixture
 def api_client():
     return APIClient()
 
+
 @pytest.fixture
 def project_category():
     return ProjectCategories.objects.create(name="Test Category")
+
 
 @pytest.fixture
 def create_students(db):
@@ -19,9 +21,7 @@ def create_students(db):
     students = []
     for i in range(3):
         user = CustomUser.objects.create_user(
-            username=f"user{i}",
-            email=f"user{i}@example.com",
-            password="password123"
+            username=f"user{i}", email=f"user{i}@example.com", password="password123"
         )
         users.append(user)
         student = Student.objects.create(
@@ -29,24 +29,29 @@ def create_students(db):
             registration_no=f"REG{i}",
             department="CS",
             semester="semester_6",
-            batch_no="2024"
+            batch_no="2024",
         )
         students.append(student)
     return students
+
 
 @pytest.fixture
 def logged_in_student(create_students):
     # Return the first student
     return create_students[0]
 
+
 def authenticate(api_client, user):
     # Mock authentication by force_authenticate or token set, here simplified for example
     api_client.force_authenticate(user=user)
 
+
 class TestStudentsListView:
     url = reverse("listofstudents")
 
-    def test_list_students_no_filter(self, api_client, logged_in_student, create_students):
+    def test_list_students_no_filter(
+        self, api_client, logged_in_student, create_students
+    ):
         authenticate(api_client, logged_in_student.user)
 
         response = api_client.get(self.url)
@@ -98,4 +103,3 @@ class TestStudentsListView:
     def test_unauthenticated_access(self, api_client):
         response = api_client.get(self.url)
         assert response.status_code == 401  # Unauthorized
-

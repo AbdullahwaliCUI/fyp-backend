@@ -36,7 +36,6 @@ from .views import (
     ChatRoomAPIView,
     GetGroupRequestView,
     ExportReportAPIView,
-
 )
 
 
@@ -183,5 +182,4 @@ urlpatterns = [
     ),
     path("chatroom/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
     path("export/report/", ExportReportAPIView.as_view(), name="export-report"),
-
 ]

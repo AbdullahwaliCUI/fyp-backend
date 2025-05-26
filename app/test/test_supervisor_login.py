@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from app.models import Supervisor, CustomUser
 
+
 @pytest.mark.django_db
 class TestSupervisorLoginAPIView:
     @pytest.fixture
@@ -17,22 +18,28 @@ class TestSupervisorLoginAPIView:
             username="supervisor1",
             email="supervisor@example.com",
             password=make_password("securepassword123"),
-            user_type="supervisor"
+            user_type="supervisor",
         )
         Supervisor.objects.create(user=user, supervisor_id="SUP123")
         return user
 
     @patch("app.views.get_tokens_for_user")  # Adjust import path accordingly
     def test_login_success(self, mock_get_tokens, api_client, supervisor_user):
-        mock_get_tokens.return_value = {"access": "mock-access-token", "refresh": "mock-refresh-token"}
-        
+        mock_get_tokens.return_value = {
+            "access": "mock-access-token",
+            "refresh": "mock-refresh-token",
+        }
+
         url = reverse("supervisor-login")
         data = {"email": supervisor_user.email, "password": "securepassword123"}
 
         response = api_client.post(url, data)
 
         assert response.status_code == 200
-        assert response.data == {"access": "mock-access-token", "refresh": "mock-refresh-token"}
+        assert response.data == {
+            "access": "mock-access-token",
+            "refresh": "mock-refresh-token",
+        }
         mock_get_tokens.assert_called_once_with(supervisor_user)
 
     def test_login_invalid_password(self, api_client, supervisor_user):

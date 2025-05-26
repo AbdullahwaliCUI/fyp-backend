@@ -906,7 +906,7 @@ class CommitteeMemberTemplates(models.Model):
         null=True,
     )
     title = models.CharField(max_length=100)
-    uploaded_file = models.FileField(upload_to="templates/")
+    uploaded_file = models.FileField(upload_to="doc_templates/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 

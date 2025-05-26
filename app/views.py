@@ -670,7 +670,13 @@ class DocumentUploadAPIView(CreateAPIView, ListAPIView, UpdateAPIView):
 
     def create(self, request, *args, **kwargs):
         document_type = self.kwargs.get("document_type")
-        if document_type not in ["scope_document", "srs_document", "sdd_document","final_report_document","presentation_document"]:
+        if document_type not in [
+            "scope_document",
+            "srs_document",
+            "sdd_document",
+            "final_report_document",
+            "presentation_document",
+        ]:
             return Response(
                 {"message": "Invalid document type"}, status=status.HTTP_400_BAD_REQUEST
             )
@@ -943,7 +949,11 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
 
     def create(self, request, *args, **kwargs):
         template_type = self.kwargs.get("template_type")
-        if template_type not in ["srs_template", "sdd_template","final_report_template"]:
+        if template_type not in [
+            "srs_template",
+            "sdd_template",
+            "final_report_template",
+        ]:
             return Response(
                 {"message": "Invalid template type"}, status=status.HTTP_400_BAD_REQUEST
             )
@@ -1083,4 +1093,3 @@ class ExportReportAPIView(APIView):
             {"message": "Reports exported successfully", "status_list": status_list},
             status=status.HTTP_200_OK,
         )
-

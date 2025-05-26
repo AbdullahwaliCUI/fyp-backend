@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0040_project_user_alter_project_panel'),
+        ("app", "0040_project_user_alter_project_panel"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='document',
-            name='document_type',
-            field=models.CharField(choices=[('scope_document', 'Scope Document'), ('srs_document', 'SRS Document'), ('sdd_document', 'SDD Document'), ('final_report_document', 'Final Report Document'), ('presentation_document', 'Presentation Document')], max_length=50),
+            model_name="document",
+            name="document_type",
+            field=models.CharField(
+                choices=[
+                    ("scope_document", "Scope Document"),
+                    ("srs_document", "SRS Document"),
+                    ("sdd_document", "SDD Document"),
+                    ("final_report_document", "Final Report Document"),
+                    ("presentation_document", "Presentation Document"),
+                ],
+                max_length=50,
+            ),
         ),
     ]

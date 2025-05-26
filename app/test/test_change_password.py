@@ -10,7 +10,6 @@ User = get_user_model()
 
 @pytest.mark.django_db
 class TestChangePasswordView:
-
     @pytest.fixture(autouse=True)
     def setup(self):
         self.client = APIClient()
@@ -23,7 +22,7 @@ class TestChangePasswordView:
             username="testuser",
             email="testuser@example.com",
             password=self.old_password,
-            user_type="student"
+            user_type="student",
         )
 
         # Generate JWT token
@@ -36,10 +35,7 @@ class TestChangePasswordView:
 
     def test_change_password_success(self):
         self.authenticate()
-        data = {
-            "old_password": self.old_password,
-            "new_password": self.new_password
-        }
+        data = {"old_password": self.old_password, "new_password": self.new_password}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["message"] == "Password changed successfully"
@@ -48,38 +44,28 @@ class TestChangePasswordView:
 
     def test_change_password_wrong_old_password(self):
         self.authenticate()
-        data = {
-            "old_password": "WrongOldPassword",
-            "new_password": self.new_password
-        }
+        data = {"old_password": "WrongOldPassword", "new_password": self.new_password}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data["message"] == "Old password is incorrect"
 
     def test_change_password_missing_old_password(self):
         self.authenticate()
-        data = {
-            "new_password": self.new_password
-        }
+        data = {"new_password": self.new_password}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "old_password" in response.data
 
     def test_change_password_missing_new_password(self):
         self.authenticate()
-        data = {
-            "old_password": self.old_password
-        }
+        data = {"old_password": self.old_password}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "new_password" in response.data
 
     def test_change_password_empty_fields(self):
         self.authenticate()
-        data = {
-            "old_password": "",
-            "new_password": ""
-        }
+        data = {"old_password": "", "new_password": ""}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "old_password" in response.data
@@ -87,10 +73,7 @@ class TestChangePasswordView:
 
     def test_change_password_unauthenticated(self):
         # No token provided
-        data = {
-            "old_password": self.old_password,
-            "new_password": self.new_password
-        }
+        data = {"old_password": self.old_password, "new_password": self.new_password}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert "detail" in response.data

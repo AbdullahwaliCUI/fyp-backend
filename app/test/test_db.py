@@ -1,9 +1,9 @@
 import pytest
 from django.db import connection
 
+
 @pytest.mark.django_db
 class TestDatabaseConnection:
-
     def test_database_connection(self):
         # Check if database connection is usable
         assert connection.is_usable() is True

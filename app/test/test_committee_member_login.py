@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from app.models import CommitteeMember, CustomUser, CommitteeMemberPanel
 
+
 @pytest.mark.django_db
 class TestCommitteeMemberLoginAPIView:
     @pytest.fixture
@@ -20,7 +21,7 @@ class TestCommitteeMemberLoginAPIView:
             username="committeemember",
             email="member@example.com",
             password=make_password("securepassword123"),
-            user_type="committee"
+            user_type="committee",
         )
         CommitteeMember.objects.create(user=user, committee_id="COM123", panel=panel)
         return user
@@ -32,7 +33,9 @@ class TestCommitteeMemberLoginAPIView:
         response = api_client.post(url, data)
 
         assert response.status_code == 200
-        assert "access" in response.data  # assuming get_tokens_for_user returns a token dict with 'access' key
+        assert (
+            "access" in response.data
+        )  # assuming get_tokens_for_user returns a token dict with 'access' key
         assert "refresh" in response.data
 
     def test_login_invalid_password(self, api_client, committee_user):
