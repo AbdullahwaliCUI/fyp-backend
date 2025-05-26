@@ -251,6 +251,7 @@ class SupervisorAdmin(ImportableExportableAdmin):
                             errors[
                                 f"username ({username}) already taken, skipping record: {row_idx}"
                             ] = [row_idx]
+                            continue
                         except CustomUser.DoesNotExist:
                             supervisor = Supervisor.objects.create(
                                 supervisor_id=record_field_values.get("supervisor_id"),
@@ -269,14 +270,12 @@ class SupervisorAdmin(ImportableExportableAdmin):
                             supervisor.save()
                             records_created += 1
 
-                            categories = record_field_values.get(
-                                "categories", ""
-                            ).split(",")
-                            for category in categories:
-                                category, _ = ProjectCategories.objects.get_or_create(
-                                    category_name=category.strip()
-                                )
-                                supervisor.category.add(category)
+                    categories = record_field_values.get("categories", "").split(",")
+                    for category in categories:
+                        category, _ = ProjectCategories.objects.get_or_create(
+                            category_name=category.strip()
+                        )
+                        supervisor.category.add(category)
 
                 except Exception as e:
                     errors[row_idx] = [
