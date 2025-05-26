@@ -265,6 +265,10 @@ class SupervisorStudentModelCommentsSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     uploaded_by = StudentProfileSerializer(read_only=True)
     document_type = serializers.CharField(required=False)
+    project_name = serializers.SerializerMethodField(read_only=True)
+
+    def get_project_name(self, obj):
+        return obj.group.project.project_name
 
     class Meta:
         model = Document
@@ -276,9 +280,16 @@ class DocumentSerializer(serializers.ModelSerializer):
             "uploaded_at",
             "status",
             "group",
+            "project_name",
             "uploaded_by",
         ]
-        read_only_fields = ["uploaded_at", "status", "group", "uploaded_by"]
+        read_only_fields = [
+            "uploaded_at",
+            "status",
+            "group",
+            "uploaded_by",
+            "project_name",
+        ]
 
 
 class DocumentStatusUpdateSerializer(serializers.ModelSerializer):
