@@ -109,6 +109,11 @@ class StudentAdmin(ImportableExportableAdmin):
                         record_field_values[current_column] = row[col_idx]
 
                 try:
+                    semester = (
+                        record_field_values.get("semester", "")
+                        .lower()
+                        .replace(" ", "_")
+                    )
                     try:
                         student = Student.objects.get(
                             registration_no=record_field_values.get("registration_no")
@@ -116,9 +121,7 @@ class StudentAdmin(ImportableExportableAdmin):
                         student.department = record_field_values.get(
                             "department", student.department
                         )
-                        student.semester = record_field_values.get(
-                            "semester", student.semester
-                        ).lower()
+                        student.semester = semester if semester else student, semester
                         student.batch_no = record_field_values.get(
                             "batch_no", student.batch_no
                         )
@@ -149,9 +152,7 @@ class StudentAdmin(ImportableExportableAdmin):
                                     "registration_no", ""
                                 ),
                                 department=record_field_values.get("department", ""),
-                                semester=record_field_values.get(
-                                    "semester", ""
-                                ).lower(),
+                                semester=semester,
                                 batch_no=record_field_values.get("batch_no", ""),
                                 user=CustomUser.objects.create(
                                     username=record_field_values.get("username", ""),
