@@ -39,6 +39,8 @@ class ImportableExportableAdmin(admin.ModelAdmin):
     import_excluded_fields: set[str] = set()
     import_excluded_fields_indexes: list = []
 
+    change_list_template = "admin/import_changelist.html"
+
     def get_urls(self):
         """
         Adding a url to import data file in the existing urls.
