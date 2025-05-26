@@ -121,7 +121,7 @@ class StudentAdmin(ImportableExportableAdmin):
                         student.department = record_field_values.get(
                             "department", student.department
                         )
-                        student.semester = semester if semester else student, semester
+                        student.semester = semester if semester else student.semester
                         student.batch_no = record_field_values.get(
                             "batch_no", student.batch_no
                         )
