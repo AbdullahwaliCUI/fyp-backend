@@ -239,29 +239,43 @@ class SupervisorAdmin(ImportableExportableAdmin):
                         supervisor.save()
                         records_updated += 1
                     except Supervisor.DoesNotExist:
-                        supervisor = Supervisor.objects.create(
-                            supervisor_id=record_field_values.get("supervisor_id"),
-                            research_interest=record_field_values.get(
-                                "research_interest", ""
-                            ),
-                            academic_background=record_field_values.get(
-                                "academic_background", ""
-                            ).lower(),
-                            user=CustomUser.objects.create(
-                                username=record_field_values.get("username", ""),
-                                email=record_field_values.get("email", ""),
-                                user_type="supervisor",
-                            ),
-                        )
-                        supervisor.save()
-                        records_created += 1
+                        username = record_field_values.get("username", "")
+                        if not username:
+                            errors[f"username required, skipping record: {row_idx}"] = [
+                                row_idx
+                            ]
+                            continue
+                        try:
+                            CustomUser.objects.get(username=username)
+                            errors[
+                                f"username ({username}) already taken, skipping record: {row_idx}"
+                            ] = [row_idx]
+                        except CustomUser.DoesNotExist:
+                            supervisor = Supervisor.objects.create(
+                                supervisor_id=record_field_values.get("supervisor_id"),
+                                research_interest=record_field_values.get(
+                                    "research_interest", ""
+                                ),
+                                academic_background=record_field_values.get(
+                                    "academic_background", ""
+                                ).lower(),
+                                user=CustomUser.objects.create(
+                                    username=record_field_values.get("username", ""),
+                                    email=record_field_values.get("email", ""),
+                                    user_type="supervisor",
+                                ),
+                            )
+                            supervisor.save()
+                            records_created += 1
 
-                    categories = record_field_values.get("categories", "").split(",")
-                    for category in categories:
-                        category, _ = ProjectCategories.objects.get_or_create(
-                            category_name=category.strip()
-                        )
-                        supervisor.category.add(category)
+                            categories = record_field_values.get(
+                                "categories", ""
+                            ).split(",")
+                            for category in categories:
+                                category, _ = ProjectCategories.objects.get_or_create(
+                                    category_name=category.strip()
+                                )
+                                supervisor.category.add(category)
 
                 except Exception as e:
                     errors[row_idx] = [
@@ -342,20 +356,32 @@ class CommitteeMemberAdmin(ImportableExportableAdmin):
                         committee.save()
                         records_updated += 1
                     except Supervisor.DoesNotExist:
-                        panel, _ = CommitteeMemberPanel.objects.get_or_create(
-                            name=record_field_values.get("panel_name")
-                        )
-                        committee = CommitteeMember.objects.create(
-                            committee_id=record_field_values.get("committee_id"),
-                            user=CustomUser.objects.create(
-                                username=record_field_values.get("username", ""),
-                                email=record_field_values.get("email", ""),
-                                user_type="supervisor",
-                            ),
-                            panel=panel,
-                        )
-                        committee.save()
-                        records_created += 1
+                        username = record_field_values.get("username", "")
+                        if not username:
+                            errors[f"username required, skipping record: {row_idx}"] = [
+                                row_idx
+                            ]
+                            continue
+                        try:
+                            CustomUser.objects.get(username=username)
+                            errors[
+                                f"username ({username}) already taken, skipping record: {row_idx}"
+                            ] = [row_idx]
+                        except CustomUser.DoesNotExist:
+                            panel, _ = CommitteeMemberPanel.objects.get_or_create(
+                                name=record_field_values.get("panel_name")
+                            )
+                            committee = CommitteeMember.objects.create(
+                                committee_id=record_field_values.get("committee_id"),
+                                user=CustomUser.objects.create(
+                                    username=record_field_values.get("username", ""),
+                                    email=record_field_values.get("email", ""),
+                                    user_type="supervisor",
+                                ),
+                                panel=panel,
+                            )
+                            committee.save()
+                            records_created += 1
 
                 except Exception as e:
                     errors[row_idx] = [
