@@ -10,15 +10,6 @@ from django.urls import path
 from django.utils.datastructures import MultiValueDict
 from openpyxl import Workbook, load_workbook
 
-# from inventory.models import (
-#     ColorVariation,
-#     ProductColorVariationImage,
-#     ProductTextVariation,
-#     ProductVariation,
-#     TextVariation,
-#     Variation,
-# )
-
 
 class XlsxImportForm(forms.Form):
     xlsx_file = forms.FileField(widget=forms.FileInput(attrs={"accept": ".xlsx"}))

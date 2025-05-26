@@ -952,6 +952,7 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
     def create(self, request, *args, **kwargs):
         template_type = self.kwargs.get("template_type")
         if template_type not in [
+            "scope_document_template",
             "srs_template",
             "sdd_template",
             "final_report_template",

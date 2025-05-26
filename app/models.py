@@ -887,6 +887,7 @@ class Document(models.Model):
 
 class CommitteeMemberTemplates(models.Model):
     TEMPLATE_TYPE_CHOICES = (
+        ("scope_documents_template", "Scope Document Template"),
         ("srs_template", "SRS Template"),
         ("sdd_template", "SDD Template"),
         ("final_report_template", "Final Report Template"),
