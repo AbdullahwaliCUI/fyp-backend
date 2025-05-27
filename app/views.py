@@ -12,12 +12,15 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 
+from rest_framework import status
+from django.http import HttpResponse
+from openpyxl import Workbook
+
 from django.shortcuts import get_object_or_404
 
 from django.db.models import Q
 from datetime import datetime, timedelta
 from django.conf import settings
-from rest_framework import status
 from .models import (
     Student,
     Supervisor,
@@ -1037,62 +1040,83 @@ class ExportReportAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        supervisor = Supervisor.objects.filter(user=request.user).first()
-        if not supervisor:
+        try:
+            supervisor = Supervisor.objects.get(user=request.user)
+        except Supervisor.DoesNotExist:
             return Response(
-                {"message": "You are not authorized to export reports."},
+                {"message": "User not found."},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
         supervisor_groups = supervisor.group_request.filter(status="accepted")
-        status_list = []
+
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = "Project Reports"
+
+        # Header row
+        headers = [
+            "Group ID",
+            "Student 1 Name",
+            "Student 1 Email",
+            "Student 1 Reg. No",
+            "Student 2 Name",
+            "Student 2 Email",
+            "Student 2 Reg. No",
+            "Project Title",
+            "Scope Doc",
+            "SRS Doc",
+            "SDD Doc",
+            "Final Report",
+            "Presentation",
+            "Status",
+        ]
+        sheet.append(headers)
+
         for group in supervisor_groups:
-            status_list.append(
-                {
-                    "group_id": group.id,
-                    "student_1": {
-                        "name": group.group.student_1.user.username,
-                        "email": group.group.student_1.user.email,
-                        "registration_no": group.group.student_1.registration_no,
-                    },
-                    "student_2": {
-                        "name": group.group.student_2.user.username,
-                        "email": group.group.student_2.user.email,
-                        "registration_no": group.group.student_2.registration_no,
-                    },
-                    "project_title": group.project.project_name
-                    if group.project
-                    else "N/A",
-                    "doc_links": {
-                        "scope_document": ",".join(
-                            group.documents.filter(
-                                document_type="scope_document", status="accepted"
-                            ).values_list("uploaded_file", flat=True)
-                        ),
-                        "srs_document": ",".join(
-                            group.documents.filter(
-                                document_type="srs_document", status="accepted"
-                            ).values_list("uploaded_file", flat=True)
-                        ),
-                        "sdd_document": ",".join(
-                            group.documents.filter(
-                                document_type="sdd_document", status="accepted"
-                            ).values_list("uploaded_file", flat=True)
-                        ),
-                        "final_report_document": ",".join(
-                            group.documents.filter(
-                                document_type="final_report_document", status="accepted"
-                            ).values_list("uploaded_file", flat=True)
-                        ),
-                        "presentation_document": ",".join(
-                            group.documents.filter(
-                                document_type="presentation_document", status="accepted"
-                            ).values_list("uploaded_file", flat=True)
-                        ),
-                    },
-                    "status": group.status,
-                }
-            )
-        return Response(
-            {"message": "Reports exported successfully", "status_list": status_list},
-            status=status.HTTP_200_OK,
+            documents = group.documents.filter(status="accepted")
+            row = [
+                group.id,
+                group.group.student_1.user.username,
+                group.group.student_1.user.email,
+                group.group.student_1.registration_no,
+                group.group.student_2.user.username,
+                group.group.student_2.user.email,
+                group.group.student_2.registration_no,
+                group.project.project_name if group.project else "N/A",
+                ",".join(
+                    documents.filter(document_type="scope_document").values_list(
+                        "uploaded_file", flat=True
+                    )
+                ),
+                ",".join(
+                    documents.filter(document_type="srs_document").values_list(
+                        "uploaded_file", flat=True
+                    )
+                ),
+                ",".join(
+                    documents.filter(document_type="sdd_document").values_list(
+                        "uploaded_file", flat=True
+                    )
+                ),
+                ",".join(
+                    documents.filter(document_type="final_report_document").values_list(
+                        "uploaded_file", flat=True
+                    )
+                ),
+                ",".join(
+                    documents.filter(document_type="presentation_document").values_list(
+                        "uploaded_file", flat=True
+                    )
+                ),
+                group.status,
+            ]
+            sheet.append(row)
+
+        # Create HTTP response with Excel file
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+        response["Content-Disposition"] = 'attachment; filename="project_reports.xlsx"'
+        workbook.save(response)
+        return response
