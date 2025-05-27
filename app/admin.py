@@ -344,7 +344,7 @@ class CommitteeMemberAdmin(ImportableExportableAdmin):
                             committee_id=record_field_values.get("committee_id")
                         )
                         committee.panel.name = record_field_values.get(
-                            "panel_name", committee.panel.name
+                            "panel", committee.panel.name
                         )
                         committee.user.username = record_field_values.get(
                             "username", committee.user.username
@@ -353,9 +353,10 @@ class CommitteeMemberAdmin(ImportableExportableAdmin):
                             "email", committee.user.email
                         )
                         committee.user.save()
+                        committee.panel.save()
                         committee.save()
                         records_updated += 1
-                    except Supervisor.DoesNotExist:
+                    except CommitteeMember.DoesNotExist:
                         username = record_field_values.get("username", "")
                         if not username:
                             errors[f"username required, skipping record: {row_idx}"] = [
@@ -369,7 +370,7 @@ class CommitteeMemberAdmin(ImportableExportableAdmin):
                             ] = [row_idx]
                         except CustomUser.DoesNotExist:
                             panel, _ = CommitteeMemberPanel.objects.get_or_create(
-                                name=record_field_values.get("panel_name")
+                                name=record_field_values.get("panel")
                             )
                             committee = CommitteeMember.objects.create(
                                 committee_id=record_field_values.get("committee_id"),
