@@ -184,3 +184,5 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "x-authorization",
 ]
+
+BASE_URL = "http://127.0.0.1:8000/"

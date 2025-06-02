@@ -1085,29 +1085,44 @@ class ExportReportAPIView(APIView):
                 group.group.student_2.registration_no,
                 group.project.project_name if group.project else "N/A",
                 ",".join(
-                    documents.filter(document_type="scope_document").values_list(
-                        "uploaded_file", flat=True
-                    )
+                    [
+                        f"{settings.BASE_URL}{item}"
+                        for item in documents.filter(
+                            document_type="scope_document"
+                        ).values_list("uploaded_file", flat=True)
+                    ]
                 ),
                 ",".join(
-                    documents.filter(document_type="srs_document").values_list(
-                        "uploaded_file", flat=True
-                    )
+                    [
+                        f"{settings.BASE_URL}{item}"
+                        for item in documents.filter(
+                            document_type="srs_document"
+                        ).values_list("uploaded_file", flat=True)
+                    ]
                 ),
                 ",".join(
-                    documents.filter(document_type="sdd_document").values_list(
-                        "uploaded_file", flat=True
-                    )
+                    [
+                        f"{settings.BASE_URL}{item}"
+                        for item in documents.filter(
+                            document_type="sdd_document"
+                        ).values_list("uploaded_file", flat=True)
+                    ]
                 ),
                 ",".join(
-                    documents.filter(document_type="final_report_document").values_list(
-                        "uploaded_file", flat=True
-                    )
+                    [
+                        f"{settings.BASE_URL}{item}"
+                        for item in documents.filter(
+                            document_type="final_report_document"
+                        ).values_list("uploaded_file", flat=True)
+                    ]
                 ),
                 ",".join(
-                    documents.filter(document_type="presentation_document").values_list(
-                        "uploaded_file", flat=True
-                    )
+                    [
+                        f"{settings.BASE_URL}{item}"
+                        for item in documents.filter(
+                            document_type="presentation_document"
+                        ).values_list("uploaded_file", flat=True)
+                    ]
                 ),
                 group.status,
             ]
