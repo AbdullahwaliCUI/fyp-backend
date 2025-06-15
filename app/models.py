@@ -885,7 +885,7 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
-class CommitteeMemberTemplates(models.Model):
+class Template(models.Model):
     TEMPLATE_TYPE_CHOICES = (
         ("scope_documents_template", "Scope Document Template"),
         ("srs_template", "SRS Template"),
@@ -899,13 +899,6 @@ class CommitteeMemberTemplates(models.Model):
     )
     semester = models.CharField(max_length=100, choices=SEMESTER_CHOICES)
     template_type = models.CharField(max_length=50, choices=TEMPLATE_TYPE_CHOICES)
-    uploaded_by = models.ForeignKey(
-        CommitteeMember,
-        on_delete=models.CASCADE,
-        related_name="uploaded_templates",
-        blank=True,
-        null=True,
-    )
     title = models.CharField(max_length=100)
     uploaded_file = models.FileField(upload_to="doc_templates/")
     uploaded_at = models.DateTimeField(auto_now_add=True)

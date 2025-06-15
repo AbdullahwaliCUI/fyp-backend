@@ -25,6 +25,7 @@ from .models import (
     Evaluation4CommitteeMember,
     Evaluation4Supervisor,
     ChatRoom,
+    Template,
 )
 from project_lib.admin import ImportableExportableAdmin, Workbook, RecordImportError
 
@@ -66,6 +67,16 @@ class SupervisorOfStudentGroupAdmin(admin.ModelAdmin):
     list_display = ["supervisor", "group", "status", "project"]
 
     list_filter = ["status", "project__panel"]
+
+
+@admin.register(Template)
+class TemplateAdmin(admin.ModelAdmin):
+    list_display = ["title", "template_type", "semester"]
+    list_filter = ["template_type", "semester"]
+
+    fieldsets = (
+        ("Template Information", {"fields": ("title", "template_type", "semester")}),
+    )
 
 
 @admin.register(Student)

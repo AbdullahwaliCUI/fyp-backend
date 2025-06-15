@@ -15,7 +15,7 @@ from app.models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
-    CommitteeMemberTemplates,
+    Template,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
     SDDEvaluationSupervisor,
@@ -298,16 +298,14 @@ class DocumentStatusUpdateSerializer(serializers.ModelSerializer):
         fields = ["status"]
 
 
-class CommitteeMemberTemplatesSerializer(serializers.ModelSerializer):
-    uploaded_by = CommitteeMemberProfileSerializer(read_only=True)
+class TemplateSerializer(serializers.ModelSerializer):
     template_type = serializers.CharField(required=False)
 
     class Meta:
-        model = CommitteeMemberTemplates
+        model = Template
         fields = [
             "id",
             "title",
-            "uploaded_by",
             "uploaded_file",
             "uploaded_at",
             "semester",

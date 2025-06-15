@@ -34,7 +34,7 @@ from .models import (
     Document,
     ScopeDocumentEvaluationCriteria,
     CommitteeMemberPanel,
-    CommitteeMemberTemplates,
+    Template,
     SRSEvaluationSupervisor,
     SRSEvaluationCommitteeMember,
     SDDEvaluationSupervisor,
@@ -61,7 +61,7 @@ from app.serializers.serializers import (
     DocumentStatusUpdateSerializer,
     ScopeDocumentEvaluationCriteriaSerializer,
     PanelSerializer,
-    CommitteeMemberTemplatesSerializer,
+    TemplateSerializer,
     SRSEvaluationSupervisorSerializer,
     SRSEvaluationCommitteeMemberSerializer,
     SDDEvaluationSupervisorSerializer,
@@ -935,11 +935,11 @@ class SupervisorStudentDetailAPIView(RetrieveAPIView):
     queryset = SupervisorOfStudentGroup.objects.all()
 
 
-class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
+class TemplateAPIView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = CommitteeMemberTemplatesSerializer
-    queryset = CommitteeMemberTemplates.objects.all()
+    serializer_class = TemplateSerializer
+    queryset = Template.objects.all()
 
     def get_queryset(self):
         queryset = (
@@ -951,23 +951,6 @@ class CommitteeMemberTemplatesAPIView(CreateAPIView, ListAPIView):
         if semester:
             return queryset.filter(semester=semester)
         return queryset
-
-    def create(self, request, *args, **kwargs):
-        template_type = self.kwargs.get("template_type")
-        if template_type not in [
-            "scope_document_template",
-            "srs_template",
-            "sdd_template",
-            "final_report_template",
-        ]:
-            return Response(
-                {"message": "Invalid template type"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        committee_member = CommitteeMember.objects.get(user=self.request.user)
-        serializer.save(uploaded_by=committee_member, template_type=template_type)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ChatRoomAPIView(CreateAPIView, ListAPIView):

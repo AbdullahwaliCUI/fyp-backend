@@ -24,7 +24,7 @@ from .views import (
     CommitteeMemberPanelDetailAPIView,
     ProjectDetailAPiView,
     SupervisorStudentDetailAPIView,
-    CommitteeMemberTemplatesAPIView,
+    TemplateAPIView,
     SRSEvaluationSupervisorView,
     SRSEvaluationCommitteeMemberView,
     SDDEvaluationCommitteeMemberView,
@@ -177,7 +177,7 @@ urlpatterns = [
     ),
     path(
         "srs_template/<str:template_type>/",
-        CommitteeMemberTemplatesAPIView.as_view(),
+        TemplateAPIView.as_view(),
         name="srs-template",
     ),
     path("chatroom/", ChatRoomAPIView.as_view(), name="chatroom-detail"),
